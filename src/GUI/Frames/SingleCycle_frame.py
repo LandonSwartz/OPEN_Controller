@@ -1,16 +1,11 @@
 #single cycle control frames
 
 import tkinter as tk
-from tkinter import *
-from tkinter import ttk
 
 #for single cycle section
-from Machine import Machine
-
+from src.Machine import Machine
 
 class SingleCycle(tk.Frame, Machine):
-
-    #machine = Machine
 
     #init
     def __init__(self, parent, Machine):

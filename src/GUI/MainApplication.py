@@ -1,12 +1,12 @@
 #main application
 
 import tkinter as tk
-from GUI.Frames.TimelapseFrame import TimelapseFrame
-from GUI.Frames.SingleCycle_frame import SingleCycle
-from GUI.Frames.StatusFrame import StatusFrame
-from GUI.Frames.TitleFrame import Title
-from GUI.Frames.ManualControlFrame import ManualControlFrame
-from Machine import Machine
+from Frames.TimelapseFrame import TimelapseFrame
+from Frames.SingleCycle_frame import SingleCycle
+from Frames.StatusFrame import StatusFrame
+from Frames.TitleFrame import Title
+from Frames.ManualControlFrame import ManualControlFrame
+from src.Machine import Machine
 
 #main frame
 class MainApplication(tk.Frame):
