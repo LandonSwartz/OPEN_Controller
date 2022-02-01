@@ -1,17 +1,17 @@
-#main application
+#main window application
 
 import tkinter as tk
-from Frames.TimelapseFrame import TimelapseFrame
-from Frames.SingleCycle_frame import SingleCycle
-from Frames.StatusFrame import StatusFrame
-from Frames.TitleFrame import Title
-from Frames.ManualControlFrame import ManualControlFrame
-from src.Machine import Machine
+from src.GUI.Frames.Timelapse_Frame import TimelapseFrame
+from src.GUI.Frames.Single_Cycle_Frame import SingleCycle
+from src.GUI.Frames.Status_Frame import StatusFrame
+from src.GUI.Frames.Title_Frame import Title
+from src.GUI.Frames.Manual_Control_Frame import ManualControlFrame
+#from src.Machine import Machine
 
 #main frame
 class MainApplication(tk.Frame):
 
-    #machine = Machine()
+    #machine = Machine
 
     def __init__(self, parent, Machine):
         tk.Frame.__init__(self)
