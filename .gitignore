@@ -1,0 +1,6 @@
+#ignore PyCharm Stuff
+.idea
+
+#ignore __pycache__ stuff from PyCharm
+**\__pycache__
+
