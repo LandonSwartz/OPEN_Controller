@@ -4,6 +4,12 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 
+#for event handling
+from src.Util.Event import Event_Obj
+
+#TODO
+#-implement the events for this frame
+
 
 class TimelapseFrame(tk.Frame):
 

@@ -10,6 +10,8 @@ from src.Util.Event import Event_Obj
 #status of connections and others
 class StatusFrame(tk.Frame):
 
+    OnSaveFolderPathChange = Event_Obj()
+
     #init
     def __init__(self, parent, Machine):
         # Status Frame
@@ -50,12 +52,14 @@ class StatusFrame(tk.Frame):
         # creating path to save folder
         filename = filedialog.askdirectory(initialdir="/", title="Select a File")
         if filename:
-            filepath = os.path.abspath(filename)
+            filepath: str = os.path.abspath(filename)
         # setting to class' save location settings
 
         # Change textbox contents
         self.Save_Folder_Textbox.delete('1.0', END) #to clear textbox, needs 1.0 for line 1 and char 0
         self.Save_Folder_Textbox.insert('1.0', str(filepath)) #refill textbox
+
+        self.machine.SetSaveFolderPath(str(filepath))
 
     #Check status of GRBL Connection on event of GRBL connected in machine
     def ChangeGRBLStatusOn(self):
@@ -94,3 +98,6 @@ class StatusFrame(tk.Frame):
         red_light = ImageTk.PhotoImage(Image.open('GUI/assets/red_light.png'))
         self.Camera_setting_graphic.configure(image=red_light)
         self.Camera_setting_graphic.image=red_light
+
+    def AddSubscriberSaveFolderPathChanged(self, objMethod):
+        self.OnSaveFolderPathChange += objMethod

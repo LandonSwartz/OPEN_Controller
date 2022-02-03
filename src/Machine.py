@@ -1,4 +1,6 @@
 #practice machine class for communicating with GUI
+import string
+from datetime import datetime
 
 from Util.UART_Serial import UART_Serial
 from Util.Event import Event_Obj
@@ -10,11 +12,18 @@ from Util.Event import Event_Obj
 
 class Machine:
 
+    #Class Variables
     numPos: int = (1, 2, 3, 4, 5, 6, 7) #number of positions of machine
-    GRBL_Positions = [0, 10, 20, 30, 40, 50, 60] #GRBL coordinates for sending to command
+    GRBL_Positions: int = [0, 10, 20, 30, 40, 50, 60] #GRBL coordinates for sending to command
     #ser = serial.Serial('dev/ttyUSB0') #open serial port
     #ser = UART_Serial('portname') #change name
 
+    cameraSettingsPath: string
+    saveFolderPath: string
+    timelapse_interval: int
+    timelapse_end_date: datetime
+
+    #Events
     OnGRBLConnected = Event_Obj()
     OffGRBLConnected = Event_Obj()
     OnLightConnected = Event_Obj()
@@ -23,19 +32,44 @@ class Machine:
     OffCameraSettingsLoaded = Event_Obj()
 
     def __init__(self):
-        print('Machine class is initated')
+        print('Machine class is initiated')
 
-    def singleCycle(self):
+    def SetSaveFolderPath(self, path):
+        self.saveFolderPath = path
+        #print('save folder path is {}'.format(self.saveFolderPath))
+
+    def SetCameraSettingsPath(self, path):
+        self.cameraSettingsPath = path
+
+    def SetTimelapseInterval(self, interval):
+        self.timelapse_interval = interval
+
+    #Function that moves to specific location
+    def MoveTo(self, posNum):
+        print("Moving to {}".format(posNum))
+
+    #Single Cycle Function
+    def SingleCycle(self):
         for pos in self.numPos:
             print('Position {} executed'.format(pos))
 
+    #Stops Single Cycle Function
     def StopCycle(self):
         print('stopping cycle')
 
+    #Starts Timelapse
+    def StartTimelapse(self):
+        print('Start timelapse')
+
+    #Stops Timelapse
+    def StopTimelapse(self):
+        print("Stop timelapse")
+
+    #Connection to Ardunios
     def Connect(self):
         #connect to lights and GRBL arduino
         print('connected')
-        self.OnGRBLConnected()
+        #self.OnGRBLConnected()
 
     #event handling
     def AddSubscribersForOnConnectedGRBLEvent(self, objMethod):

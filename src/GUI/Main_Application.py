@@ -29,7 +29,7 @@ class MainApplication(tk.Frame):
         #Event Handling Setting Subscribers#
 
         #single cycle
-        self.single_cycle.AddSubscriberForOnSingleCycleEvent(self.machine.singleCycle)
+        self.single_cycle.AddSubscriberForOnSingleCycleEvent(self.machine.SingleCycle)
         self.single_cycle.AddSubscribersForOnStopSingleCycleEvent(self.machine.StopCycle)
 
         #status events
@@ -39,4 +39,4 @@ class MainApplication(tk.Frame):
         self.machine.AddSubscriberForOffLightConnectedEvent(self.status_frame.ChangeLightsStatusOff)
         self.machine.AddSubscribersForOnLoadCameraSettingsEvent(self.status_frame.ChangeCameraSettingsOn)
         self.machine.AddSubscriberForOffLoadCameraSettingsEvent(self.status_frame.ChangeCameraSettingsOff())
-        #self.machine.Connect()
+        self.status_frame.AddSubscriberSaveFolderPathChanged(self.machine.SetSaveFolderPath)
