@@ -58,7 +58,7 @@ class TimelapseFrame(tk.Frame):
 
         #Start and Stop Button
         self.Start_Button = tk.Button(self, text='Start', command=self.Start_Button)
-        self.Start_Button.grid(row=2, column =0, columnspan=3,
+        self.Start_Button.grid(row=2, column=0, columnspan=3,
                                padx=5, ipadx=30, pady=5, ipady=5,
                                sticky='ew')
 

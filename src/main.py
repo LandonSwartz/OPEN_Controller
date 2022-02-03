@@ -8,7 +8,7 @@ def main():
     #maindow set up
     root = tk.Tk()
     root.title("OPEN Controller")
-    #root.geometry('800x600') #set window size
+    #root.geometry('400x600') #set window size
     #root.resizable(False, False) #turning off resizing
 
     machine = Machine()
