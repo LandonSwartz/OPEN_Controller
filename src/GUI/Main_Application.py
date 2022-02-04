@@ -23,8 +23,10 @@ class MainApplication(tk.Frame):
         self.status_frame.grid(row=1, column=0)
         self.single_cycle = SingleCycle(self, self.machine)
         self.single_cycle.grid(row=2, column=0)
-        TimelapseFrame(self, self.machine).grid(row=3, column=0)
-        ManualControlFrame(self, self.machine).grid(row=4, column=0)
+        self.timelapse_frame = TimelapseFrame(self, self.machine)
+        self.timelapse_frame.grid(row=3, column=0)
+        self.manual_control_frame = ManualControlFrame(self, self.machine)
+        self.manual_control_frame.grid(row=4, column=0)
 
         #Event Handling Setting Subscribers#
 
@@ -40,3 +42,12 @@ class MainApplication(tk.Frame):
         self.machine.AddSubscribersForOnLoadCameraSettingsEvent(self.status_frame.ChangeCameraSettingsOn)
         self.machine.AddSubscriberForOffLoadCameraSettingsEvent(self.status_frame.ChangeCameraSettingsOff())
         self.status_frame.AddSubscriberSaveFolderPathChanged(self.machine.SetSaveFolderPath)
+
+        #manual frame events, will fill out in future when finish with machine
+        #self.manual_control_frame.AddSubscriberForPositionNumChanged(self.machine.SetCurrentPosition)
+        self.manual_control_frame.AddSubscriberForMoveToBtnPressed(self.machine.MoveTo)
+        self.manual_control_frame.AddSubscriberForManualImageCaptureBtnPressed(self.machine.CaptureImage)
+        #self.manual_control_frame.AddSubscriberForManualBacklightOnBtnPressed()
+        #self.manual_control_frame.AddSubscriberForManualBacklightOffBtnPressed()
+        #self.manual_control_frame.AddSubscriberForManualGrowlightOnBtnPressed()
+        #self.manual_control_frame.AddSubscriberForManualGrowlightOffBtnPressed()

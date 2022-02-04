@@ -2,7 +2,7 @@
 import string
 from datetime import datetime
 
-from Util.UART_Serial import UART_Serial
+from Util.UART_Serial_class import UART_Serial
 from Util.Event import Event_Obj
 
 #TODO
@@ -15,6 +15,7 @@ class Machine:
     #Class Variables
     numPos: int = (1, 2, 3, 4, 5, 6, 7) #number of positions of machine
     GRBL_Positions: int = [0, 10, 20, 30, 40, 50, 60] #GRBL coordinates for sending to command
+    current_Position: int
     #ser = serial.Serial('dev/ttyUSB0') #open serial port
     #ser = UART_Serial('portname') #change name
 
@@ -36,6 +37,7 @@ class Machine:
 
     def SetSaveFolderPath(self, path):
         self.saveFolderPath = path
+        print("save folder setting path is {}".format(self.saveFolderPath))
         #print('save folder path is {}'.format(self.saveFolderPath))
 
     def SetCameraSettingsPath(self, path):
@@ -46,7 +48,16 @@ class Machine:
 
     #Function that moves to specific location
     def MoveTo(self, posNum):
-        print("Moving to {}".format(posNum))
+        print("Moving to position {}".format(posNum))
+
+    def CaptureImage(self):
+        print('Capturing image on vimba camera')
+
+    #Set Current Position, may not need
+    '''def SetCurrentPosition(self, posNum):
+        self.current_Position = posNum
+        print("current_position is {}".format(self.current_Position))
+        #log for current position'''
 
     #Single Cycle Function
     def SingleCycle(self):

@@ -9,7 +9,7 @@ TODO:
 
 import serial
 
-class UART_Serial:
+class UART_Serial(object):
     """For communicating through TX/RX pins"""
 
     'Constructor'

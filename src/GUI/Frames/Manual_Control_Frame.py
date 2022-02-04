@@ -2,11 +2,20 @@
 
 import tkinter as tk
 from tkinter import ttk
+from src.Util.Event import Event_Obj
 
 
 class ManualControlFrame(tk.Frame):
 
     numPos = ('1', '2', '3', '4', '5', '6', '7')
+
+    OnPositionNumChanged = Event_Obj()
+    OnMoveToEvent = Event_Obj()
+    OnCaptureImageEvent = Event_Obj()
+    OnBacklightsOnEvent = Event_Obj()
+    OnBacklightsOffEvent = Event_Obj()
+    OnGrowlightsOnEvent = Event_Obj()
+    OnGrowlightsOffEvent = Event_Obj()
 
     def __init__(self, parent, Machine):
         tk.Frame.__init__(self)
@@ -57,30 +66,59 @@ class ManualControlFrame(tk.Frame):
         self.manual_growlight_off_btn = tk.Button(self, text='Off', command=self.ManualGrowlightOffBtn)
         self.manual_growlight_off_btn.grid(row=4, column=3, padx=5, pady=5, ipady=5, sticky='ew')
 
+    # set current position in grbl class
     def PositionNum_combo_changed(self, event):
-        #set current position in grbl class
         print('Position num combo box changed')
+        #self.OnPositionNumChanged(self.PositionNumber_combobox.get())
 
+    # move machine to position
     def MoveTo_Button_Clicked(self):
-        #move machine to position
+        self.OnMoveToEvent(self.PositionNumber_combobox.get()) #passing the position number selected to machine
         print('Move to button pressed')
 
+    # manually capture image
     def ManualImageCaputre(self):
-        #manually capture image
+        self.OnCaptureImageEvent()
         print('Manual Image button clicked')
 
     #turns on backlight on manually
     def ManualBacklightOnBtn(self):
+        self.OnBacklightsOnEvent()
         print('Manual backlight on btn pressed')
 
     #manually turn backlights off
     def ManualBacklightOffBtn(self):
+        self.OnBacklightsOffEvent()
         print('Manual backlight off btn pressed')
 
     #manually turn growlight on
     def ManualGrowlightOnBtn(self):
+        self.OnGrowlightsOnEvent()
         print('Manual Growlight on btn pressed')
 
     #manually turn growlight off
     def ManualGrowlightOffBtn(self):
+        self.OnGrowlightsOffEvent()
         print('Manual Growlight off btn pressed')
+
+    #Event Subscruber Functions
+    def AddSubscriberForPositionNumChanged(self, objMethod):
+        self.OnPositionNumChanged += objMethod
+
+    def AddSubscriberForMoveToBtnPressed(self, objMethod):
+        self.OnMoveToEvent += objMethod
+
+    def AddSubscriberForManualImageCaptureBtnPressed(self, objMethod):
+        self.OnCaptureImageEvent += objMethod
+
+    def AddSubscriberForManualBacklightOnBtnPressed(self, objMethod):
+        self.OnBacklightsOnEvent += objMethod
+
+    def AddSubscriberForManualBacklightOffBtnPressed(self, objMethod):
+        self.OnBacklightsOffEvent += objMethod
+
+    def AddSubscriberForManualGrowlightOnBtnPressed(self, objMethod):
+        self.OnGrowlightsOnEvent += objMethod
+
+    def AddSubscriberForManualGrowlightOffBtnPressed(self, objMethod):
+        self.OnGrowlightsOffEvent += objMethod

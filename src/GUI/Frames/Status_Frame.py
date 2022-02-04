@@ -59,7 +59,7 @@ class StatusFrame(tk.Frame):
         self.Save_Folder_Textbox.delete('1.0', END) #to clear textbox, needs 1.0 for line 1 and char 0
         self.Save_Folder_Textbox.insert('1.0', str(filepath)) #refill textbox
 
-        self.machine.SetSaveFolderPath(str(filepath))
+        self.OnSaveFolderPathChange(filepath)
 
     #Check status of GRBL Connection on event of GRBL connected in machine
     def ChangeGRBLStatusOn(self):
