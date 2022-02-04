@@ -3,6 +3,7 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
+import tkcalendar
 
 #for event handling
 from src.Util.Event import Event_Obj
@@ -55,6 +56,8 @@ class TimelapseFrame(tk.Frame):
         self.End_date_dec.bind('<<ComboboxSelected>>', func=self.End_date_interval_set)
         self.End_date_dec.grid(row=1, column=4, padx=5, pady=5)
 
+        self.end_date_cal = tkcalendar.DateEntry(self, width=3)
+
         self.End_date_time = ttk.Combobox(self, width=5, textvariable=StringVar())
         self.End_date_time['values'] = time_units
         self.End_date_time['state'] = 'readonly'
@@ -72,6 +75,14 @@ class TimelapseFrame(tk.Frame):
         self.Stop_Button.grid(row=2, column=3, columnspan=3,
                               padx=5, ipadx=30, pady=5, ipady=5,
                               sticky='ew')
+
+        #Night time selection
+        night_time_label = tk.Label(self, text='Night Time Selection').grid(row=3, column=0, columnspan=6, sticky='ew')
+
+        self.calendar = tkcalendar.DateEntry(self, text="Choose date")
+        self.calendar.grid(row=4, column=1)
+
+
 
     def Interval_dec_set(self, event):
         #set value of machine timelapse interval here

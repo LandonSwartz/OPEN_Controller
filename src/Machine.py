@@ -5,10 +5,7 @@ from datetime import datetime
 from Util.UART_Serial_class import UART_Serial
 from Util.Event import Event_Obj
 
-#TODO
-#implement communicating with serial
-#connect with lights and GRBL
-#move function
+#TODO -implement communicating with serial, -connect with lights and GRBL, - move function
 
 class Machine:
 
