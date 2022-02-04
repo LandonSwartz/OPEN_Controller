@@ -51,3 +51,6 @@ class MainApplication(tk.Frame):
         #self.manual_control_frame.AddSubscriberForManualBacklightOffBtnPressed()
         #self.manual_control_frame.AddSubscriberForManualGrowlightOnBtnPressed()
         #self.manual_control_frame.AddSubscriberForManualGrowlightOffBtnPressed()
+
+        #timelapse frame events
+        self.timelapse_frame.AddSubscriberOnStartButtonPressed(self.machine.SingleCycle)

@@ -16,6 +16,14 @@ class TimelapseFrame(tk.Frame):
 
     #Will need to set default values for machine because only updates when changed
 
+    OnIntervalChanged = Event_Obj()
+    OnIntervalUnitsChanged = Event_Obj()
+    OnEndDateChanged = Event_Obj()
+    OnStartNightChanged = Event_Obj()
+    OnEndNightChanged = Event_Obj()
+    OnStartButtonPressed = Event_Obj()
+    OnStopButtonPressed = Event_Obj()
+
     #init
     def __init__(self, parent, Machine):
         tk.Frame.__init__(self)
@@ -25,6 +33,7 @@ class TimelapseFrame(tk.Frame):
 
         time_units = ('hours', 'days', 'weeks')
         decimal_units = ('1', '2', '3', '4', '5', '6', '7', '8', '9')
+        clock_units = ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12')
 
         #timelapse title
         Timelapse_title = tk.Label(self, text='Timelapse').grid(row=0, column=0, columnspan=6, sticky='EW')
@@ -49,48 +58,72 @@ class TimelapseFrame(tk.Frame):
         #end date
         End_date = tk.Label(self, text="End Date:").grid(row=1, column=3)
 
-        self.End_date_dec = ttk.Combobox(self, width=3, textvariable=tk.StringVar())
-        self.End_date_dec['values'] = decimal_units
-        self.End_date_dec['state'] = 'readonly'
-        self.End_date_dec.current(1)
-        self.End_date_dec.bind('<<ComboboxSelected>>', func=self.End_date_interval_set)
-        self.End_date_dec.grid(row=1, column=4, padx=5, pady=5)
+        self.end_date_cal = tkcalendar.DateEntry(self, borderwidth=2)
+        self.end_date_cal.configure(justify='center')
+        self.end_date_cal.grid(row=1, column=4, padx=5, pady=5, columnspan=2, sticky='ew')
+        self.end_date_cal.bind('<<DateEntrySelected>>', self.EndDateEntrySelected)
 
-        self.end_date_cal = tkcalendar.DateEntry(self, width=3)
-
-        self.End_date_time = ttk.Combobox(self, width=5, textvariable=StringVar())
-        self.End_date_time['values'] = time_units
-        self.End_date_time['state'] = 'readonly'
-        self.End_date_time.current(0)
-        self.End_date_time.bind('<<ComboboxSelected>>', func=self.End_date_time_set)
-        self.End_date_time.grid(row=1, column=5, padx=5, pady=5)
-
-        #Start and Stop Button
-        self.Start_Button = tk.Button(self, text='Start', command=self.Start_Button)
-        self.Start_Button.grid(row=2, column=0, columnspan=3,
-                               padx=5, ipadx=30, pady=5, ipady=5,
-                               sticky='ew')
-
-        self.Stop_Button = tk.Button(self, text='Stop', command=self.Stop_Button)
-        self.Stop_Button.grid(row=2, column=3, columnspan=3,
-                              padx=5, ipadx=30, pady=5, ipady=5,
-                              sticky='ew')
+        #label = tk.Label(self, text='test').grid(row=1, column=5)
 
         #Night time selection
         night_time_label = tk.Label(self, text='Night Time Selection').grid(row=3, column=0, columnspan=6, sticky='ew')
 
-        self.calendar = tkcalendar.DateEntry(self, text="Choose date")
-        self.calendar.grid(row=4, column=1)
+        #Start of Night
+        start_night_label = tk.Label(self, text='Start of Night:').grid(row=4, column=0, padx=5, pady=5)
 
+        self.start_night_time = ttk.Combobox(self, width=3, textvariable=tk.StringVar())
+        self.start_night_time['values'] = clock_units
+        self.start_night_time['state'] = 'readonly'
+        self.start_night_time.current(8)
+        self.start_night_time.bind('<<ComboboxSelected>>', func=self.StartNightComboChanged)
+        self.start_night_time.grid(row=4, column=1, padx=5, pady=5)
 
+        pm_label = tk.Label(self, text="PM").grid(row=4, column=2, padx=5, pady=5)
+
+        #end of night
+        end_night_label = tk.Label(self, text='End of Night').grid(row=4, column=3, padx=5, pady=5)
+
+        self.end_night_time = ttk.Combobox(self, width =3, textvariable=tk.StringVar())
+        self.end_night_time['values'] = clock_units
+        self.end_night_time['state'] = 'readonly'
+        self.end_night_time.current(6)
+        self.end_night_time.bind('<<ComboboxSelected>>', func=self.EndNightComboChanged)
+        self.end_night_time.grid(row=4, column=4, padx=5, pady=5)
+
+        am_label = tk.Label(self, text='AM').grid(row=4, column=5, padx=5, pady=5)
+
+        #Start and Stop Button
+        self.Start_Button = tk.Button(self, text='Start', command=self.Start_Button)
+        self.Start_Button.grid(row=5, column=0, columnspan=3,
+                               padx=5, ipadx=20, pady=5, ipady=5,
+                               sticky='ew')
+
+        self.Stop_Button = tk.Button(self, text='Stop', command=self.Stop_Button)
+        self.Stop_Button.grid(row=5, column=3, columnspan=3,
+                              padx=5, ipadx=30, pady=5, ipady=5,
+                              sticky='ew')
+
+    def EndNightComboChanged(self, event):
+        print("End of night is {} AM".format(self.end_night_time.get()))
+        self.OnEndNightChanged(self.end_night_time.get())
+
+    def StartNightComboChanged(self, event ):
+        print("Start of Night is {} PM".format(self.start_night_time.get()))
+        self.OnStartNightChanged(self.start_night_time.get())
+
+    def EndDateEntrySelected(self, event):
+        print('Selected data is {}'.format(self.end_date_cal.get_date()))
+        self.OnEndDateChanged(self.end_date_cal.get_date())
 
     def Interval_dec_set(self, event):
         #set value of machine timelapse interval here
         print('The value of timelapse interval is: ' + self.Interval_combobox.get())
+        self.OnIntervalChanged(self.Interval_combobox.get())
 
     def Interval_time_unit_set(self, event):
         #set time unit for timelapse
         print('Timelapse interval time unit is ' + self.Interval_combobox_time_unit.get())
+        self.OnIntervalUnitsChanged(self.Interval_combobox_time_unit.get())
 
     def End_date_interval_set(self, event):
         #set end date interval
@@ -103,8 +136,31 @@ class TimelapseFrame(tk.Frame):
     def Start_Button(self):
         #starting timelapse
         print('Starting Cycle...')
+        self.OnStartButtonPressed()
 
     def Stop_Button(self):
         #stopping timelapse
         print('Stopping Cycle...')
+        self.OnStopButtonPressed
 
+    #Event Subscribing Functions
+    def AddSubscriberOnIntervalChanged(self, objMethod):
+        self.OnIntervalChanged += objMethod
+
+    def AddSubscriberOnIntervalUnitChanged(self, objMethod):
+        self.OnIntervalUnitsChanged += objMethod
+
+    def AddSubscriberOnEndDateChanged(self, objMethod):
+        self.OnEndDateChanged += objMethod
+
+    def AddSubscriberOnStartNightChanged(self, objMethod):
+        self.OnStartNightChanged += objMethod
+
+    def AddSubscriberOnEndNightChanged(self, objMethod):
+        self.OnEndNightChanged += objMethod
+
+    def AddSubscriberOnStartButtonPressed(self, objMethod):
+        self.OnStartButtonPressed += objMethod
+
+    def AddSubscriberOnStopButtonPressed(self, objMethod):
+        self.OnStopButtonPressed += objMethod
