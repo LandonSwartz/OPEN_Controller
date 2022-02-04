@@ -25,13 +25,7 @@ class SingleCycle(tk.Frame, Machine):
         self.Stop_Button = tk.Button(self, text='Stop', command=self.stopButton)
         self.Stop_Button.grid(row=1, column=1, padx=5, pady=5, ipadx=60, ipady=5, sticky='ew')
 
-    #Event Handling
-    def AddSubscriberForOnSingleCycleEvent(self, objMethod):
-        self.OnSingleCycle += objMethod
-
-    def AddSubscribersForOnStopSingleCycleEvent(self, objMethod):
-        self.OnStopSingleCycle += objMethod
-
+    #Frame Functions
     def startButton(self):
         self.OnSingleCycle()
         #print('start')
@@ -40,3 +34,10 @@ class SingleCycle(tk.Frame, Machine):
         self.OnStopSingleCycle()
         #print('stop')
         #stop cycle
+
+    #Event Handling
+    def AddSubscriberForOnSingleCycleEvent(self, objMethod):
+        self.OnSingleCycle += objMethod
+
+    def AddSubscribersForOnStopSingleCycleEvent(self, objMethod):
+        self.OnStopSingleCycle += objMethod
