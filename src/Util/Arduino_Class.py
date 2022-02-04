@@ -33,3 +33,6 @@ class Arduino(object):
     def Read_Serial(self):
         msg = self.serial.Read_Data()
         return msg
+
+    def __del__(self):
+        self.serial.__del__()
