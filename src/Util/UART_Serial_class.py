@@ -13,9 +13,9 @@ class UART_Serial(object):
     """For communicating through TX/RX pins"""
 
     'Constructor'
-    def __init__(self, portname):
-        #self.ser = serial.Serial() May try to set here everything
-        self.ser.Open_Port(portname)
+    def __init__(self):
+        self.ser = serial.Serial() #May try to set here everything
+        #self.ser.Open_Port(portname)
         print('UART_Serial Created')
 
     'Opens Serial Port with passed port name'

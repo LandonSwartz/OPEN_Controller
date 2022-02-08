@@ -5,6 +5,7 @@ from GUI.Main_Application import MainApplication
 from Machine import Machine
 
 def main():
+
     #maindow set up
     root = tk.Tk()
     root.title("OPEN Controller")
@@ -13,9 +14,7 @@ def main():
 
     machine = Machine()
 
-    #classes for GUI
     app = MainApplication(root, machine)
-    #try to put app into smaller window
 
     #run window
     app.mainloop()

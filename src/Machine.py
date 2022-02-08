@@ -4,6 +4,7 @@ from datetime import datetime
 
 from Util.UART_Serial_class import UART_Serial
 from Util.Event import Event_Obj
+from Util.GRBL_Arduino import GRBL_Arduino
 
 #TODO -implement communicating with serial, -connect with lights and GRBL, - move function
 
@@ -20,6 +21,8 @@ class Machine:
     saveFolderPath: string
     timelapse_interval: int
     timelapse_end_date: datetime
+
+    grbl_arduino = GRBL_Arduino('portname')
 
     #Events
     OnGRBLConnected = Event_Obj()
