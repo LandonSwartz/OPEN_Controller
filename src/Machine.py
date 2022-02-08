@@ -22,7 +22,7 @@ class Machine:
     timelapse_interval: int
     timelapse_end_date: datetime
 
-    grbl_arduino = GRBL_Arduino('portname')
+    grbl_arduino = GRBL_Arduino('/dev/ttyACM0')
 
     #Events
     OnGRBLConnected = Event_Obj()

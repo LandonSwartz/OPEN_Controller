@@ -9,6 +9,7 @@ class File(object):
 
     def __init__(self, filename):
         filename_full = os.path.join(self.current_working_dir, filename)
+        print(filename_full)
         self.file_obj = self.OpenFileRead(filename_full)
 
     # Opens file with given filename
