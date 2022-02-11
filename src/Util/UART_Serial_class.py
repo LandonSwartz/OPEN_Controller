@@ -2,16 +2,20 @@
 
 '''
 TODO:
-- Check to make sure work
+- Need to check sending
 - logging
 - etc
 '''
 
 import serial
+<<<<<<< HEAD
 import threading
 from queue import Queue
 
 # may do events for when recieving data causing data to be sent
+=======
+import codecs
+>>>>>>> 838cbcec834bb808de5d5bd022b69aba2aa6bcfe
 
 class UART_Serial(object):
     """For communicating through TX/RX pins"""
@@ -49,13 +53,18 @@ class UART_Serial(object):
 
     'Reads Data from Serial Port when called'
     def Read_Data(self):
-        data = self.ser.readline  # read line from port
-        print("Read " + data + "from serial port {}".format(self.ser.name))  # may not need this
-        return data
+        #data = self.ser.read(40)  # read ten bytes from port
+        data = self.ser.readline() # reading to EOL char
+        data_nor = codecs.decode(data)
+        #data_string = str(data, 'UTF-8')
+        print("Read: '{}' from serial port {}".format(data_nor, self.Get_Port_Name())) # may not need this
+        return data_nor
 
     'Write passed data to serial port when called'
     def Write_Data(self, data):
-        self.ser.write(data)
+        data_encode = data.encode('utf-8')
+        print('sent: {}'.format(data_encode))
+        self.ser.write(data_encode)
 
     """Get Baudrate of current open port"""
     def Get_Baudrate(self):

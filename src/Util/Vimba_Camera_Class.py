@@ -32,7 +32,7 @@ class Vimba_Camera(object):
             frame = self.camera.get_frame()
             frame.convert_pixel_format(PixelFormat.BayerGB12)
             self.SaveImage(frame, posNum)
-            return frame # may not return 
+            return frame # may not return
         else:
             print("No Save Location Set")
         #return frame
