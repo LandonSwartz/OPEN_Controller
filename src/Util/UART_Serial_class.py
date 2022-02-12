@@ -22,7 +22,7 @@ class UART_Serial(object):
     'Opens Serial Port with passed port name'
     def Open_Port(self, portname):
         try:
-            self.ser = serial.Serial(portname)
+            self.ser = serial.Serial(portname, timeout = 1, write_timeout = 1)
             self.ser.baudrate = 115200  # grbl baudrate
         except serial.SerialException:
             print("Serial port failed to open")
@@ -30,18 +30,30 @@ class UART_Serial(object):
 
     'Reads Data from Serial Port when called'
     def Read_Data(self):
-        #data = self.ser.read(40)  # read ten bytes from port
+        data = []
+        if(self.ser.in_waiting > 0):
+            line = self.ser.readline()
+            data.append(codecs.decode(line))
+        
+        print(data)
+        return data
+            
+        '''#data = self.ser.read(40)  # read ten bytes from port
         data = self.ser.readline() # reading to EOL char
         data_nor = codecs.decode(data)
         #data_string = str(data, 'UTF-8')
-        print("Read: '{}' from serial port {}".format(data_nor, self.Get_Port_Name())) # may not need this
-        return data_nor
+        #print("Read: '{}' from serial port {}".format(data_nor, self.Get_Port_Name())) # may not need this
+        print(data_nor)
+        return data_nor'''
 
     'Write passed data to serial port when called'
     def Write_Data(self, data):
         data_encode = data.encode('utf-8')
         print('sent: {}'.format(data_encode))
         self.ser.write(data_encode)
+        
+    def IsDataInSerial(self):
+        return (self.ser.in_waiting > 0)
 
     """Get Baudrate of current open port"""
     def Get_Baudrate(self):
