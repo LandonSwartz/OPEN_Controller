@@ -19,5 +19,6 @@ class GRBL_Arduino(Arduino):
     # set GRBL Settings to serial port
     def SetGRBLSettings(self):
         #print('Send GRBL Settings')
+        print('loading settings')
         #for line in self.GRBL_Settings.ReturnFileAsList():
             #print(line)
