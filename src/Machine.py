@@ -5,6 +5,7 @@ from datetime import datetime
 from Util.UART_Serial_class import UART_Serial
 from Util.Event import Event_Obj
 from Util.GRBL_Arduino import GRBL_Arduino
+from Util.Vimba_Camera_Class import Vimba_Camera
 
 #TODO -implement communicating with serial, -connect with lights and GRBL, - move function
 
@@ -23,6 +24,7 @@ class Machine:
     timelapse_end_date: datetime
 
     grbl_arduino = GRBL_Arduino('/dev/ttyACM0')
+    vimba_camera = Vimba_Camera()
 
     #Events
     OnGRBLConnected = Event_Obj()

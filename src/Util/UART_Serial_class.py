@@ -7,15 +7,15 @@ TODO:
 - etc
 '''
 
+'''To try next: interprocess communication with spinning off serial listener into new process with fork(), execfile()
+or subprocess. Communicate between the processes with named pipe (os.mkfifo) or multi-threading communicator'''
+
 import serial
-<<<<<<< HEAD
 import threading
 from queue import Queue
 
 # may do events for when recieving data causing data to be sent
-=======
 import codecs
->>>>>>> 838cbcec834bb808de5d5bd022b69aba2aa6bcfe
 
 class UART_Serial(object):
     """For communicating through TX/RX pins"""
