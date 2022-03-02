@@ -1,10 +1,13 @@
 from multiprocessing.connection import Client
-import time
+from time import sleep
+import os
+
 adr = ('localhost', 6000)
 
-with Client(adr, authkey=b'password') as conn:
+with Client(address=adr, authkey=None) as conn:
+
     while True:
         print(conn.recv_bytes())
-        time.sleep(1)
+        sleep(1)
         conn.send_bytes(b'sending back bytes')
-        time.sleep(1)
+        sleep(1)

@@ -31,19 +31,19 @@ class Lights_Arduino(Arduino):
 
     #turning on Backlights when called with command
     def BackLightsOn(self):
-        self.serial.Write_Data('S1V2') #or whatever command is
+        self.ser.Write_Data('S1V2') #or whatever command is
         self.backlight_state = True
 
     def BackLightsOff(self):
-        self.serial.Write_Data('')
+        self.ser.Write_Data('')
         self.backlight_state = False
 
     def GrowlightsOn(self):
-        self.serial.Write_Data('')
+        self.ser.Write_Data('')
         self.growlight_state = True
 
     def GrowlightsOff(self):
-        self.serial.Write_Data('')
+        self.ser.Write_Data('')
         self.growlight_state = False
 
     #Encapsulation Functions

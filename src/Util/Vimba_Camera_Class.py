@@ -11,7 +11,7 @@ class Vimba_Camera(object):
     vimba_ins = Vimba.get_instance()
     settings_file = 'src/Setting_Files/camera_settings.xml' #TODO set this constant
 
-    def __init__(self, saveLocation):
+    def __init__(self):
         self.save_location = None
         self.camera = self.Connect() # because only one cam should be attached
      #   self.save_location = saveLocation #file path to save folder location
@@ -35,7 +35,6 @@ class Vimba_Camera(object):
             return frame # may not return
         else:
             print("No Save Location Set")
-        #return frame
 
     def SaveImage(self, frame, posNum):
         filename = self.Filepath_Create(posNum)

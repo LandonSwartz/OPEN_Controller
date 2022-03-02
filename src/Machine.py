@@ -2,7 +2,6 @@
 import string
 from datetime import datetime
 
-from Util.UART_Serial_class import UART_Serial
 from Util.Event import Event_Obj
 from Util.GRBL_Arduino import GRBL_Arduino
 from Util.Vimba_Camera_Class import Vimba_Camera
@@ -15,16 +14,14 @@ class Machine:
     numPos: int = (1, 2, 3, 4, 5, 6, 7) #number of positions of machine
     GRBL_Positions: int = [0, 10, 20, 30, 40, 50, 60] #GRBL coordinates for sending to command
     current_Position: int
-    #ser = serial.Serial('dev/ttyUSB0') #open serial port
-    #ser = UART_Serial('portname') #change name
 
     cameraSettingsPath: string
     saveFolderPath: string
     timelapse_interval: int
     timelapse_end_date: datetime
 
-    grbl_arduino = GRBL_Arduino('/dev/ttyACM0')
-    vimba_camera = Vimba_Camera()
+    #grbl_arduino = GRBL_Arduino('/dev/ttyACM0')
+    #vimba_camera = Vimba_Camera()
 
     #Events
     OnGRBLConnected = Event_Obj()
