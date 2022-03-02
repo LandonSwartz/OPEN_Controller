@@ -20,7 +20,7 @@ class StatusFrame(tk.Frame):
         self.machine = Machine
 
         #have to declare after tk.Frame
-        red_light = ImageTk.PhotoImage(Image.open('GUI/assets/red_light.png'))
+        red_light = ImageTk.PhotoImage(Image.open('src/GUI/assets/red_light.png'))
 
         GRBL_connection = tk.Label(self, text="GRBL Connection:").grid(row=1, column=1, pady=5, padx=5, sticky='w')
 
@@ -95,7 +95,7 @@ class StatusFrame(tk.Frame):
 
     #Changes Camera Settings Loaded Graphic to off graphic on event of not load settings in machine
     def ChangeCameraSettingsOff(self):
-        red_light = ImageTk.PhotoImage(Image.open('GUI/assets/red_light.png'))
+        red_light = ImageTk.PhotoImage(Image.open('src/GUI/assets/red_light.png'))
         self.Camera_setting_graphic.configure(image=red_light)
         self.Camera_setting_graphic.image=red_light
 

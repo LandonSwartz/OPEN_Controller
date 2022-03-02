@@ -6,9 +6,6 @@ from src.GUI.Frames.Single_Cycle_Frame import SingleCycle
 from src.GUI.Frames.Status_Frame import StatusFrame
 from src.GUI.Frames.Title_Frame import Title
 from src.GUI.Frames.Manual_Control_Frame import ManualControlFrame
-#from src.Machine import Machine
-from time import sleep
-
 
 #main frame
 class MainApplication(tk.Frame):
