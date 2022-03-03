@@ -3,8 +3,8 @@
 import tkinter as tk
 
 #for single cycle section
-from src.Machine import Machine
-from src.Util.Event import Event_Obj
+from Machine import Machine
+from Util.Event import Event_Obj
 
 class SingleCycle(tk.Frame, Machine):
 

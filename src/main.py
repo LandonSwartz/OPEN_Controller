@@ -1,8 +1,12 @@
 #draft of OPEN Controller UI, actual design
 
+import sys
+print(sys.path)
+
 import tkinter as tk
 from GUI.Main_Application import MainApplication
 from Machine import Machine
+
 
 def main():
 

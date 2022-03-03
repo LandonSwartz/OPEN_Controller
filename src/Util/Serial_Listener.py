@@ -1,6 +1,9 @@
 #Serial listener process
-
-from src.Util.UART_Serial_class import UART_Serial
+try:
+    from UART_Serial_class import UART_Serial
+except ImportError:
+    print('failure to import in serial_listener.py')
+    
 from time import sleep
 import socket
 import sys
@@ -26,7 +29,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             #recieve data, check socket then send data from socket also
             try:
                 data = s.recv(1024)
-
+            
                 if data:    #if recieved something from socket
                     data_string = str(data, 'UTF-8')
                     print("client received: " + data_string) #TODO change to log eventually
@@ -41,13 +44,15 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             try:
                 ser_data = ser.Read_Data() #check to make sure in bytes
                 if ser_data:
-                    s.send(ser_data) #send recievd serial data over socket
+                    s.sendall(ser_data) #send recievd serial data over socket
                     ser_data_string = str(ser_data, 'UTF-8')
                     print('serial sent: ' + ser_data_string)
             except TimeoutError:
-                # print('not able to send from client')
+                #print('not able to send from client')
                 pass
 
             sleep(0.1)
     except KeyboardInterrupt:
+        print("keyboard interrupt and port closed")
+        s.close()
         ser.Close_Port()

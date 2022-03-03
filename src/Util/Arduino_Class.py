@@ -9,7 +9,7 @@ import serial
 #from src.Util.UART_Serial_class import UART_Serial
 #from src.Util.File_Class import File
 
-from src.Util.Serial_Communicator_Class import Serial_Communicator
+from Util.Serial_Communicator_Class import Serial_Communicator
 
 class Arduino:
 

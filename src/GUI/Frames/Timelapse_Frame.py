@@ -6,7 +6,7 @@ from tkinter import ttk
 import tkcalendar
 
 #for event handling
-from src.Util.Event import Event_Obj
+from Util.Event import Event_Obj
 
 #TODO
 #-implement the events for this frame

@@ -36,9 +36,9 @@ class Machine:
         print('Machine class is initiated')
 
         #initating arduinos and camera
-        '''self.grbl_ar = GRBL_Arduino('portname') #GRBL arduino
-        self.lights_ar = Lights_Arduino('portname')
-        self.camera = Vimba_Camera()
+        self.grbl_ar = GRBL_Arduino('/dev/ttyACM0') #GRBL arduino
+        #self.lights_ar = Lights_Arduino('portname')
+        #self.camera = Vimba_Camera()
 
         self.saveFolderPath = None
         self.cameraSettingsPath = None

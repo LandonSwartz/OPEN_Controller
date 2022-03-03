@@ -3,8 +3,8 @@
 #from src.Util.Arduino_Class import Arduino
 #from src.Util.File_Class import File
 
-from src.Util.Arduino_Class import Arduino
-from src.Util.File_Class import File
+from Util.Arduino_Class import Arduino
+from Util.File_Class import File
 
 class GRBL_Arduino(Arduino):
 

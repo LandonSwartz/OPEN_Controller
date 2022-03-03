@@ -17,9 +17,6 @@ import socket
 import codecs
 
 class UART_Serial:
-    """For communicating through TX/RX pins"""
-    to_send_queue = Queue(maxsize=0) #sending queue
-    to_read_queue = Queue(maxsize=0) #reading queue
 
     'Constructor'
     def __init__(self):
@@ -31,7 +28,8 @@ class UART_Serial:
     'Opens Serial Port with passed port name'
     def Open_Port(self, portname):
         try:
-            self.ser = serial.Serial(portname, timeout = 1, write_timeout = 1)
+            print(portname)
+            self.ser = serial.Serial(portname, timeout = 1, write_timeout = 0.1)
             self.ser.baudrate = 115200  # grbl baudrate
         except serial.SerialException:
             print("Serial port failed to open")
@@ -39,21 +37,21 @@ class UART_Serial:
 
     'Reads Data from Serial Port when called'
     def Read_Data(self):
-        data = []
-        if(self.ser.in_waiting > 0):
-            line = self.ser.readline()
-            data.append(codecs.decode(line))
-        
-        print(data)
-        return data
+        #data = []
+        #if(self.ser.in_waiting > 0):
+        line = self.ser.readline()
+            #data.append(codecs.decode(line))
+            #print(line)
+        return bytes(line)
 
     'Write passed data to serial port when called'
     def Write_Data(self, data):
-        data_encode = data.encode('utf-8')
-        print('sent: {}'.format(data_encode))
-        self.ser.write(data_encode)
+        #data_encode = data.encode('utf-8')
+        #print('sent: {}'.format(data_encode))
+        self.ser.write(data)
         
     def IsDataInSerial(self):
+        #print(self.ser.in_waiting)
         return (self.ser.in_waiting > 0)
 
     """Get Baudrate of current open port"""
