@@ -2,7 +2,7 @@
 
 import tkinter as tk
 from tkinter import ttk
-from src.Util.Event import Event_Obj
+from Util.Event import Event_Obj
 
 
 class ManualControlFrame(tk.Frame):

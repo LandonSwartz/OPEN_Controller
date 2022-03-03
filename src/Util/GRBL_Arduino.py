@@ -13,7 +13,8 @@ class GRBL_Arduino(Arduino):
     def __init__(self, portname):
         #super().__init__()
         super(GRBL_Arduino, self).__init__(portname)
-        self.SetGRBLSettings()
+        self.HomeCommand()
+        #self.SetGRBLSettings()
 
     # set GRBL Settings to serial port
     def SetGRBLSettings(self):
@@ -25,4 +26,4 @@ class GRBL_Arduino(Arduino):
             self.Send_Serial(line)
 
     def HomeCommand(self):
-        self.ser.Send('$H')
+        self.Send_Serial('$H\n')

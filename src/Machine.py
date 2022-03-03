@@ -5,7 +5,7 @@ from time import sleep
 
 from Util.Event import Event_Obj
 from Util.GRBL_Arduino import GRBL_Arduino
-from Util.Vimba_Camera_Class import Vimba_Camera
+#from Util.Vimba_Camera_Class import Vimba_Camera
 from Util.Lights_Arduino import Lights_Arduino
 
 import threading #for threading things
@@ -127,6 +127,7 @@ class Machine:
     #Starts Timelapse
     def StartTimelapse(self):
         print('Start timelapse')
+        self.grbl_ar.Send_Serial('$H\n')
 
     #Stops Timelapse
     def StopTimelapse(self):

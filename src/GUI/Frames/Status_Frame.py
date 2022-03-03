@@ -3,9 +3,9 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import filedialog
-from PIL import ImageTk, Image
+#from PIL import ImageTk, Image
 import os
-from src.Util.Event import Event_Obj
+from Util.Event import Event_Obj
 
 #status of connections and others
 class StatusFrame(tk.Frame):
@@ -20,25 +20,25 @@ class StatusFrame(tk.Frame):
         self.machine = Machine
 
         #have to declare after tk.Frame
-        red_light = ImageTk.PhotoImage(Image.open('src/GUI/assets/red_light.png'))
+        #red_light = ImageTk.PhotoImage(Image.open('src/GUI/assets/red_light.png'))
 
         GRBL_connection = tk.Label(self, text="GRBL Connection:").grid(row=1, column=1, pady=5, padx=5, sticky='w')
 
-        self.GRBL_status_graphic = tk.Label(self, image=red_light)
-        self.GRBL_status_graphic.image = red_light
-        self.GRBL_status_graphic.grid(row=1, column=2, pady=5, padx=5)
+        #self.GRBL_status_graphic = tk.Label(self, image=red_light)
+        #self.GRBL_status_graphic.image = red_light
+        #self.GRBL_status_graphic.grid(row=1, column=2, pady=5, padx=5)
         #self.GRBL_status_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.GRBL_status_graphic))
 
         Lights_connection = tk.Label(self, text='Lights Connection:').grid(row=1, column=3, padx=5, pady=5, sticky='w')
-        self.Lights_status_graphic = tk.Label(self, image=red_light)
-        self.Lights_status_graphic.image = red_light
-        self.Lights_status_graphic.grid(row=1, column=4, padx=5, pady=5)
+        #self.Lights_status_graphic = tk.Label(self, image=red_light)
+        #self.Lights_status_graphic.image = red_light
+        #self.Lights_status_graphic.grid(row=1, column=4, padx=5, pady=5)
         #self.Lights_status_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.Lights_status_graphic))
 
         Camera_Setting_status = tk.Label(self, text='Camera Status:').grid(row=2, column=1, padx=5, pady=5, sticky='w')
-        self.Camera_setting_graphic = tk.Label(self, image=red_light)
-        self.Camera_setting_graphic.image = red_light
-        self.Camera_setting_graphic.grid(row=2, column=2, padx=5, pady=5)
+        #self.Camera_setting_graphic = tk.Label(self, image=red_light)
+        #.Camera_setting_graphic.image = red_light
+        #self.Camera_setting_graphic.grid(row=2, column=2, padx=5, pady=5)
         #self.Camera_setting_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.Camera_setting_graphic))
 
         Save_Folder_Label = tk.Label(self, text='Save Folder Location:').grid(row=3, column=1, padx=5, pady=5)
@@ -95,9 +95,10 @@ class StatusFrame(tk.Frame):
 
     #Changes Camera Settings Loaded Graphic to off graphic on event of not load settings in machine
     def ChangeCameraSettingsOff(self):
-        red_light = ImageTk.PhotoImage(Image.open('src/GUI/assets/red_light.png'))
-        self.Camera_setting_graphic.configure(image=red_light)
-        self.Camera_setting_graphic.image=red_light
+        print('Change camera settings off')
+        #red_light = ImageTk.PhotoImage(Image.open('src/GUI/assets/red_light.png'))
+        #self.Camera_setting_graphic.configure(image=red_light)
+        #self.Camera_setting_graphic.image=red_light
 
     def AddSubscriberSaveFolderPathChanged(self, objMethod):
         self.OnSaveFolderPathChange += objMethod

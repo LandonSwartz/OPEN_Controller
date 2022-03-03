@@ -1,7 +1,7 @@
 #Lights Arduino Subclass
 
-from src.Util.Arduino_Class import Arduino
-from src.Util.UART_Serial_class import UART_Serial
+from Util.Arduino_Class import Arduino
+from Util.UART_Serial_class import UART_Serial
 
 #TODO - fill out commands
 

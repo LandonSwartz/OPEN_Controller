@@ -7,6 +7,8 @@ import tkinter as tk
 from GUI.Main_Application import MainApplication
 from Machine import Machine
 
+from time import sleep
+
 
 def main():
 
@@ -19,7 +21,7 @@ def main():
     machine = Machine()
 
     app = MainApplication(root, machine)
-
+    sleep(2)
     #run window
     app.mainloop()
 
