@@ -9,9 +9,10 @@ from Machine import Machine
 
 from time import sleep
 
+from Util.logger_setup import logger
+
 
 def main():
-
     #maindow set up
     root = tk.Tk()
     root.title("OPEN Controller")
@@ -26,4 +27,5 @@ def main():
     app.mainloop()
 
 if __name__ == '__main__':
+    logger.info('Application started and logging started')
     main()

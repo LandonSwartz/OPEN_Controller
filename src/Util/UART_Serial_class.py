@@ -16,10 +16,15 @@ import socket
 # may do events for when recieving data causing data to be sent
 import codecs
 
+import logging
+
 class UART_Serial:
 
     'Constructor'
     def __init__(self):
+        # logging
+        logger = logging.getLogger(__name__)
+
         self.ser = serial.Serial() #May try to set here everything
         #self.ser.Open_Port(portname)
         print('UART_Serial Created')
@@ -28,7 +33,8 @@ class UART_Serial:
     'Opens Serial Port with passed port name'
     def Open_Port(self, portname):
         try:
-            print(portname)
+            # print(portname)
+            logger.info()
             self.ser = serial.Serial(portname, timeout = 1, write_timeout = 0.1)
             self.ser.baudrate = 115200  # grbl baudrate
         except serial.SerialException:
