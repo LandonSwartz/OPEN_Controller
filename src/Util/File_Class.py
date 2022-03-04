@@ -1,7 +1,9 @@
 # File Utility Class
-
+import logging
 import string
 import os
+
+log = logging.getLogger('open_controller_log.log')
 
 class File(object):
 
@@ -9,21 +11,21 @@ class File(object):
 
     def __init__(self, filename):
         filename_full = os.path.join(self.current_working_dir, filename)
-        print(filename_full)
+        #print(filename_full)
         self.file_obj = self.OpenFileRead(filename_full)
 
     # Opens file with given filename
     def OpenFileRead(self, filename: string):
         try:
             return open(filename, 'r')
-        except FileNotFoundError:
-            print('Failed to open file')
+        except FileNotFoundError as e:
+            log.error('Error msg: {}'.format(e, filename))
 
     def OpenFileWrite(self, filename: string):
         try:
             return open(filename, 'w')
-        except FileNotFoundError:
-            print('Failed to open file')
+        except FileNotFoundError as e:
+            log.error('{} while opening file at {} for writing'.format(e, filename))
 
     def IsClosed(self):
         return self.file_obj.closed() #True if closed, false otherwise
@@ -45,4 +47,5 @@ class File(object):
 
     def __del__(self):
         self.file_obj.close()
+        log.debug('File Closed')
 

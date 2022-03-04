@@ -1,5 +1,5 @@
 #Combines serial class and serial listener process to create serial event loop
-
+import logging
 import subprocess
 import socket
 from time import sleep
@@ -7,6 +7,8 @@ from signal import SIGINT
 #from signal import CTRL_C_EVENT
 
 #TODO change CTRL_C_EVENT to SIGINT in UNIX
+
+log = logging.getLogger('open_controller_log.log')
 
 class Serial_Communicator:
 
@@ -18,11 +20,10 @@ class Serial_Communicator:
         # passing args to process
         self.args.append(portname)
         self.args.append(socket_port)
-        print(self.args)
 
         # start serial process
         self.p = subprocess.Popen(self.args) #may add the shell part
-        print('pid for serial communicator process', self.p.pid)
+        log.info('Serial communicator subprocess pid is {}'.format(self.p.pid))
         sleep(0.1)
 
         #starting socket
@@ -30,12 +31,14 @@ class Serial_Communicator:
         try:
             self.s.listen()
             self.conn, self.addr = self.s.accept()
+            log.debug('Socket connected to port {} on localhost'.format(socket_port))
         except socket.timeout:
-            print('Timed out for client socket connection')
+            log.error('Timed out for client socket connection at port {}'.format(socket_port))
         self.s.settimeout(0.1) #timeout set to 0.1 millisecond after connecting
 
     #sends to serial
     def Send(self, msg):
+        log.info('Sending {} from to serial socket'.format(msg))
         msg_byte = self.ConvertToBytes(msg)
         self.conn.send(msg_byte)
 
@@ -49,7 +52,8 @@ class Serial_Communicator:
                 return string
             else:
                 return None
-        except TimeoutError:
+        except TimeoutError as e:
+            log.error('{} trying to read from socket in serial communicator'.format(e))
             print('timeout from reading to serial in serial communicator')
 
 
@@ -66,5 +70,6 @@ class Serial_Communicator:
             self.p.send_signal(SIGINT) #sending interupt signals to python script to close serial, change to UNIX SIGINT in future
             self.p.terminate() #may need to do p.kill()
             self.conn.close() #close socket
+            log.debug('Deleting Serial Communciator Class')
         except:
             print('failure to delete class properly')

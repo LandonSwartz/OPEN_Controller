@@ -1,6 +1,7 @@
 #Super of Arduino Class
 
 # Standard Libaries
+import logging
 import random
 import string
 import serial
@@ -10,6 +11,8 @@ import serial
 #from src.Util.File_Class import File
 
 from Util.Serial_Communicator_Class import Serial_Communicator
+
+log = logging.getLogger('open_controller_log.log')
 
 class Arduino:
 
@@ -21,11 +24,13 @@ class Arduino:
 
     #Send Data Over Serial Port
     def Send_Serial(self, msg):
+        log.info('Sending {} through arduino serial'.format(msg))
         self.ser.Send(msg)
 
     #Read Serial Response
     def Read_Serial(self):
         msg = self.ser.Read()
+        log.info('Read {} from arduino serial'.format(msg))
         return msg
 
     def __del__(self):

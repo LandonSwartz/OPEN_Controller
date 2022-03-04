@@ -11,7 +11,6 @@ class GRBL_Arduino(Arduino):
     GRBL_Settings = File('Setting_Files/GRBL_settings.txt')
 
     def __init__(self, portname):
-        #super().__init__()
         super(GRBL_Arduino, self).__init__(portname)
         self.HomeCommand()
         #self.SetGRBLSettings()

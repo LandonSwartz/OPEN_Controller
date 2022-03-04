@@ -1,10 +1,12 @@
 # Class wrapper for Vimba Camera to facilate easier use
-
+import logging
 import os.path
 
 import cv2
 from vimba import *
 from datetime import datetime
+
+log = logging.getLogger('open_controller_log.log')
 
 class Vimba_Camera(object):
 
@@ -12,6 +14,7 @@ class Vimba_Camera(object):
     settings_file = 'src/Setting_Files/camera_settings.xml' #TODO set this constant
 
     def __init__(self):
+        log.debug('Vimba Camera Class initiated')
         self.save_location = None
         self.camera = self.Connect() # because only one cam should be attached
      #   self.save_location = saveLocation #file path to save folder location
@@ -30,11 +33,13 @@ class Vimba_Camera(object):
     def CaptureFrame(self):
         frame = self.camera.get_frame()
         frame.convert_pixel_format(PixelFormat.BayerGB12)
+        log.info('Image Captured with vimba camera')
         #self.SaveImage(frame)
         return frame  # may not return
 
     def SaveImage(self, frame, filename):
         cv2.imwrite(filename, frame.as_opencv_image())
+        log.info('Image writen to disk at {}'.format(filename))
 
     def __del__(self):
-        print('camera called for close')
+        log.debug('Vimba Camera class deleted')
