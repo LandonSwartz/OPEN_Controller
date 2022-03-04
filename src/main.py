@@ -1,7 +1,7 @@
 #draft of OPEN Controller UI, actual design
 
 import sys
-print(sys.path)
+#print(sys.path)
 
 import tkinter as tk
 from GUI.Main_Application import MainApplication
@@ -9,7 +9,8 @@ from Machine import Machine
 
 from time import sleep
 
-from Util.logger_setup import logger
+#from Util.logger_setup import logger
+import logging
 
 
 def main():
@@ -27,5 +28,10 @@ def main():
     app.mainloop()
 
 if __name__ == '__main__':
+    logging.basicConfig(filename='open_controller_log.log',
+                        level=logging.DEBUG,
+                        format='%(asctime)s:%(levelname)s:%(message)s',
+                        datefmt='%m/%d/%Y %I:%M:%S %p')
+    logger = logging.getLogger('log')
     logger.info('Application started and logging started')
     main()

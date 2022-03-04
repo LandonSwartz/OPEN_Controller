@@ -18,34 +18,34 @@ import codecs
 
 import logging
 
+log = logging.getLogger('open_controller_log.log')
+
 class UART_Serial:
 
     'Constructor'
     def __init__(self):
-        # logging
-        logger = logging.getLogger(__name__)
-
         self.ser = serial.Serial() #May try to set here everything
         #self.ser.Open_Port(portname)
-        print('UART_Serial Created')
+        log.debug('UART Serial object initialzied')
 
 
     'Opens Serial Port with passed port name'
     def Open_Port(self, portname):
         try:
             # print(portname)
-            logger.info()
-            self.ser = serial.Serial(portname, timeout = 1, write_timeout = 0.1)
+            self.port = portname
+            self.ser = serial.Serial(portname, timeout=1, write_timeout=0.1)
             self.ser.baudrate = 115200  # grbl baudrate
+            log.info('Serial Port open at port {}'.format(portname))
         except serial.SerialException:
-            print("Serial port failed to open")
+            log.error('serial.SerialException error when trying to open port {}'.format(portname))
             return 0  # for failure to open port
 
     'Reads Data from Serial Port when called'
     def Read_Data(self):
-        #data = []
         #if(self.ser.in_waiting > 0):
         line = self.ser.readline()
+        log.debug('Read {} from serial port {}'.format(line, self.port))
             #data.append(codecs.decode(line))
             #print(line)
         return bytes(line)
@@ -54,6 +54,7 @@ class UART_Serial:
     def Write_Data(self, data):
         #data_encode = data.encode('utf-8')
         #print('sent: {}'.format(data_encode))
+        log.debug('Wrote {} to serial port {}'.format(data, self.port))
         self.ser.write(data)
         
     def IsDataInSerial(self):
@@ -90,4 +91,4 @@ class UART_Serial:
     def __del__(self):
         # closing port
         self.Close_Port()
-        print('Port closed')
+        log.info('Serial Port {} closed'.format(self.port))

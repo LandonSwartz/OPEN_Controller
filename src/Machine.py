@@ -1,4 +1,5 @@
 #practice machine class for communicating with GUI
+import logging
 import os
 from datetime import datetime
 from time import sleep
@@ -9,6 +10,8 @@ from Util.GRBL_Arduino import GRBL_Arduino
 from Util.Lights_Arduino import Lights_Arduino
 
 import threading #for threading things
+
+logger = logging.getLogger('open_controller_log.log')
 
 class Machine:
 
@@ -33,7 +36,8 @@ class Machine:
     OffCameraSettingsLoaded = Event_Obj()
 
     def __init__(self):
-        print('Machine class is initiated')
+        # print('Machine class is initiated')
+        logger.info('Machine class is initiated')
 
         #initating arduinos and camera
         self.grbl_ar = GRBL_Arduino('/dev/ttyACM0') #GRBL arduino
@@ -49,8 +53,7 @@ class Machine:
     def SetSaveFolderPath(self, path):
         # setting path
         self.saveFolderPath = path
-        print("save folder setting path is {}".format(self.saveFolderPath))
-        #print('save folder path is {}'.format(self.saveFolderPath))
+        logger.debug('save folder setting path is {}'.format(self.saveFolderPath))
 
         #make folders in save folder path
         if path: #if real path
@@ -70,11 +73,13 @@ class Machine:
 
     #Function that moves to specific location
     def MoveTo(self, posNum):
-        print("Moving to position {}".format(posNum))
+        #print("Moving to position {}".format(posNum))
+        logger.info('Moving to position {}'.format(posNum))
         self.grbl_ar.Send_Serial(self.commands[posNum]) #sending command
 
     def CaptureImage(self):
-        print('Capturing image on vimba camera')
+        # print('Capturing image on vimba camera')
+        logger.info('Capturing image on vimba camera')
         self.camera.CaptureFrame()
 
     # TODO make sure this works
@@ -89,7 +94,8 @@ class Machine:
     #Set Current Position, may not need
     def SetCurrentPosition(self, posNum):
         self.current_Position = posNum
-        print("current_position is {}".format(self.current_Position))
+        # print("current_position is {}".format(self.current_Position))
+        logger.debug('Current Position is {}'.format(self.current_Position))
 
     #Single Cycle Function, may throw into thread
     def SingleCycle(self):
