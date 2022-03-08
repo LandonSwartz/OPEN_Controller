@@ -7,4 +7,4 @@ class Title(tk.Frame):
         tk.Frame.__init__(self, parent, width=600)
         OC_title = tk.Label(self, text='OPEN Controller', justify='center',
                             font=('Bauhaus 93', 24))
-        OC_title.pack(fill='both', expand='true')
+        OC_title.pack(fill='both', expand=True)

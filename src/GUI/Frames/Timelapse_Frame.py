@@ -1,12 +1,14 @@
 #Timelapse frame for UI
-
+import logging
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 import tkcalendar
 
 #for event handling
-from Util.Event import Event_Obj
+from src.Util.Event import Event_Obj
+
+log = logging.getLogger('open_controller_log.log')
 
 #TODO
 #-implement the events for this frame
@@ -104,43 +106,43 @@ class TimelapseFrame(tk.Frame):
                               sticky='ew')
 
     def EndNightComboChanged(self, event):
-        print("End of night is {} AM".format(self.end_night_time.get()))
+        log.info("End of night is {} AM".format(self.end_night_time.get()))
         self.OnEndNightChanged(self.end_night_time.get())
 
     def StartNightComboChanged(self, event ):
-        print("Start of Night is {} PM".format(self.start_night_time.get()))
+        log.info("Start of Night is {} PM".format(self.start_night_time.get()))
         self.OnStartNightChanged(self.start_night_time.get())
 
     def EndDateEntrySelected(self, event):
-        print('Selected data is {}'.format(self.end_date_cal.get_date()))
+        log.info("Selected end date is {}".format(self.end_date_cal.get_date()))
         self.OnEndDateChanged(self.end_date_cal.get_date())
 
     def Interval_dec_set(self, event):
         #set value of machine timelapse interval here
-        print('The value of timelapse interval is: ' + self.Interval_combobox.get())
+        log.info('The value of timelapse interval is: ' + self.Interval_combobox.get())
         self.OnIntervalChanged(self.Interval_combobox.get())
 
     def Interval_time_unit_set(self, event):
         #set time unit for timelapse
-        print('Timelapse interval time unit is ' + self.Interval_combobox_time_unit.get())
+        log.info('Timelapse interval time unit is ' + self.Interval_combobox_time_unit.get())
         self.OnIntervalUnitsChanged(self.Interval_combobox_time_unit.get())
 
     def End_date_interval_set(self, event):
         #set end date interval
-        print('End Date interval is: ' + self.End_date_dec.get())
+        log.info('End Date interval is: ' + self.End_date_dec.get())
 
     def End_date_time_set(self, event):
         #setting time unit for end date
-        print('End date time unit is: ' + self.End_date_time.get())
+        log.info('End date time unit is: ' + self.End_date_time.get())
 
     def Start_Button(self):
         #starting timelapse
-        print('Starting Cycle...')
+        log.info("Starting Cycle...")
         self.OnStartButtonPressed()
 
     def Stop_Button(self):
         #stopping timelapse
-        print('Stopping Cycle...')
+        log.info("Stopping Cycle...")
         self.OnStopButtonPressed
 
     #Event Subscribing Functions

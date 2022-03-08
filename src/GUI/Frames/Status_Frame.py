@@ -1,11 +1,13 @@
 #status frame class
-
+import logging
 import tkinter as tk
 from tkinter import *
 from tkinter import filedialog
-#from PIL import ImageTk, Image
+from PIL import ImageTk, Image
 import os
-from Util.Event import Event_Obj
+from src.Util.Event import Event_Obj
+
+log = logging.getLogger('open_controller_log.log')
 
 #status of connections and others
 class StatusFrame(tk.Frame):
@@ -20,26 +22,26 @@ class StatusFrame(tk.Frame):
         self.machine = Machine
 
         #have to declare after tk.Frame
-        #red_light = ImageTk.PhotoImage(Image.open('src/GUI/assets/red_light.png'))
+        red_light = ImageTk.PhotoImage(Image.open('src/GUI/assets/red_light.png'))
 
         GRBL_connection = tk.Label(self, text="GRBL Connection:").grid(row=1, column=1, pady=5, padx=5, sticky='w')
 
-        #self.GRBL_status_graphic = tk.Label(self, image=red_light)
-        #self.GRBL_status_graphic.image = red_light
-        #self.GRBL_status_graphic.grid(row=1, column=2, pady=5, padx=5)
-        #self.GRBL_status_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.GRBL_status_graphic))
+        self.GRBL_status_graphic = tk.Label(self, image=red_light)
+        self.GRBL_status_graphic.image = red_light
+        self.GRBL_status_graphic.grid(row=1, column=2, pady=5, padx=5)
+        self.GRBL_status_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.GRBL_status_graphic))
 
         Lights_connection = tk.Label(self, text='Lights Connection:').grid(row=1, column=3, padx=5, pady=5, sticky='w')
-        #self.Lights_status_graphic = tk.Label(self, image=red_light)
-        #self.Lights_status_graphic.image = red_light
-        #self.Lights_status_graphic.grid(row=1, column=4, padx=5, pady=5)
-        #self.Lights_status_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.Lights_status_graphic))
+        self.Lights_status_graphic = tk.Label(self, image=red_light)
+        self.Lights_status_graphic.image = red_light
+        self.Lights_status_graphic.grid(row=1, column=4, padx=5, pady=5)
+        self.Lights_status_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.Lights_status_graphic))
 
         Camera_Setting_status = tk.Label(self, text='Camera Status:').grid(row=2, column=1, padx=5, pady=5, sticky='w')
-        #self.Camera_setting_graphic = tk.Label(self, image=red_light)
-        #.Camera_setting_graphic.image = red_light
-        #self.Camera_setting_graphic.grid(row=2, column=2, padx=5, pady=5)
-        #self.Camera_setting_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.Camera_setting_graphic))
+        self.Camera_setting_graphic = tk.Label(self, image=red_light)
+        self.Camera_setting_graphic.image = red_light
+        self.Camera_setting_graphic.grid(row=2, column=2, padx=5, pady=5)
+        self.Camera_setting_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.Camera_setting_graphic))
 
         Save_Folder_Label = tk.Label(self, text='Save Folder Location:').grid(row=3, column=1, padx=5, pady=5)
         self.Save_Folder_Textbox = tk.Text(self, height=1, width=20, font=('Arial', 12))
@@ -53,6 +55,7 @@ class StatusFrame(tk.Frame):
         filename = filedialog.askdirectory(initialdir="/", title="Select a File")
         if filename:
             filepath: str = os.path.abspath(filename)
+            log.debug('Save Folder path is {}'.format(filepath))
         # setting to class' save location settings
 
         # Change textbox contents
@@ -66,39 +69,42 @@ class StatusFrame(tk.Frame):
         green_light = ImageTk.PhotoImage(Image.open('GUI/assets/green_light.png'))
         self.GRBL_status_graphic.configure(image=green_light)
         self.GRBL_status_graphic.image = green_light
-        print("GRBL Status Graphic changed")
+        log.debug('GRBL Status graphic changed to green luight')
 
     #Change image of GRBL connection on event of GRBL connection not working
     def ChangeGRBLStatusOff(self):
         red_light = ImageTk.PhotoImage(Image.open('GUI/assets/red_light.png'))
         self.GRBL_status_graphic.configure(image=red_light)
         self.GRBL_status_graphic.image=red_light
+        log.debug('GRBL Status Graphic Changed to red light')
 
     #Change image of Lights Arduino graphic on event of machine connecting to Ardunio
     def ChangeLightsStatusOn(self):
         green_light = ImageTk.PhotoImage(Image.open('GUI/assets/green_light.png'))
         self.Lights_status_graphic.configure(image=green_light)
         self.Lights_status_graphic.image = green_light
-        print("Lights Status Graphic changed")
+        log.debug('Light arduino Status graphic changed to green light')
 
     #Change lights Ardunio Connection to off graphic on event of disconnection in machine
     def ChangeLightsStatusOff(self):
         red_light = ImageTk.PhotoImage(Image.open('GUI/assets/red_light.png'))
         self.Lights_status_graphic.configure(image=red_light)
         self.Lights_status_graphic.image=red_light
+        log.debug('Light arduino Status graphic changed to red light')
 
     #Change Camera Settings Loaded Graphic to on graphic on event of load settings in machine
     def ChangeCameraSettingsOn(self):
         green_light = ImageTk.PhotoImage(Image.open('GUI/assets/green_light.png'))
         self.Camera_setting_graphic.configure(image=green_light)
         self.Camera_setting_graphic.image = green_light
+        log.debug('Camera Settings graphic changed to green light')
 
     #Changes Camera Settings Loaded Graphic to off graphic on event of not load settings in machine
     def ChangeCameraSettingsOff(self):
-        print('Change camera settings off')
         #red_light = ImageTk.PhotoImage(Image.open('src/GUI/assets/red_light.png'))
         #self.Camera_setting_graphic.configure(image=red_light)
         #self.Camera_setting_graphic.image=red_light
+        log.debug('Camera Settings graphic changed to red light')
 
     def AddSubscriberSaveFolderPathChanged(self, objMethod):
         self.OnSaveFolderPathChange += objMethod

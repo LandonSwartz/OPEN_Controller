@@ -15,7 +15,7 @@ class Serial_Communicator:
     'Constructor'
     def __init__(self, portname, socket_port):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.args = ['python3', 'Util/Serial_Listener.py']
+        self.args = ['python3', 'Util/Serial_Listener.py'] # python3 for unix
 
         # passing args to process
         self.args.append(portname)

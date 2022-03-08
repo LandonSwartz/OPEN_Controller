@@ -1,9 +1,10 @@
 #frame for manual control of GUI
-
+import logging
 import tkinter as tk
 from tkinter import ttk
-from Util.Event import Event_Obj
+from src.Util.Event import Event_Obj
 
+log = logging.getLogger('open_controller_log.log')
 
 class ManualControlFrame(tk.Frame):
 
@@ -68,38 +69,39 @@ class ManualControlFrame(tk.Frame):
 
     # set current position in grbl class
     def PositionNum_combo_changed(self, event):
-        print('Position num combo box changed')
+        log.info('Position num combo box changed')
         #self.OnPositionNumChanged(self.PositionNumber_combobox.get())
 
     # move machine to position
     def MoveTo_Button_Clicked(self):
         self.OnMoveToEvent(self.PositionNumber_combobox.get()) #passing the position number selected to machine
-        print('Move to button pressed')
+        log.info('Move to button pressed')
 
     # manually capture image
     def ManualImageCaputre(self):
         self.OnCaptureImageEvent()
         print('Manual Image button clicked')
+        log.info('Manual Image Button clicked')
 
     #turns on backlight on manually
     def ManualBacklightOnBtn(self):
         self.OnBacklightsOnEvent()
-        print('Manual backlight on btn pressed')
+        log.info('Manual backlight on btn pressed')
 
     #manually turn backlights off
     def ManualBacklightOffBtn(self):
         self.OnBacklightsOffEvent()
-        print('Manual backlight off btn pressed')
+        log.info('Manual backlight off btn pressed')
 
     #manually turn growlight on
     def ManualGrowlightOnBtn(self):
         self.OnGrowlightsOnEvent()
-        print('Manual Growlight on btn pressed')
+        log.info('Manual Growlight on btn pressed')
 
     #manually turn growlight off
     def ManualGrowlightOffBtn(self):
         self.OnGrowlightsOffEvent()
-        print('Manual Growlight off btn pressed')
+        log.info("Manual Growlight off btn pressed")
 
     #Event Subscruber Functions
     def AddSubscriberForPositionNumChanged(self, objMethod):
