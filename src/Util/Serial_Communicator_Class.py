@@ -4,8 +4,8 @@ import subprocess
 import socket
 import sys
 from time import sleep
-from signal import SIGINT
-#from signal import CTRL_C_EVENT
+#from signal import SIGINT
+from signal import CTRL_C_EVENT
 
 #TODO change CTRL_C_EVENT to SIGINT in UNIX
 
@@ -38,42 +38,43 @@ class Serial_Communicator:
             log.debug('Socket connected to port {} on localhost'.format(socket_port))
         except socket.timeout:
             log.error('Timed out for client socket connection at port {}'.format(socket_port))
-        self.s.settimeout(0.1) #timeout set to 0.1 millisecond after connecting
+        self.s.settimeout(1) #timeout set to 1 millisecond after connecting
 
-    #sends to serial
+    # sends to serial
     def Send(self, msg):
         log.info('Sending {} from to serial socket'.format(msg))
         msg_byte = self.ConvertToBytes(msg)
         self.conn.send(msg_byte)
 
-    #recieve from serial
+    # receive from serial
     def Read(self):
         try:
-            bytes_rec = self.conn.recv(1024)
+            bytes_rec = self.conn.recv(1024)    # receive bytes
             if bytes_rec:
                 string = self.ConvertToString(bytes_rec)
-                print("read from serial communicator: " + string)
+                #print("read from serial communicator: " + string)
+                log.info("Read: {}, from serial port in serial communciator",format(string))
                 return string
             else:
+                log.debug('Nothing was read from the serial port')
                 return None
         except TimeoutError as e:
             log.error('{} trying to read from socket in serial communicator'.format(e))
-            print('timeout from reading to serial in serial communicator')
-
 
     # Converting string to bytes to send over socket
     def ConvertToBytes(self, string):
         return bytes(string, 'UTF-8') #converting to bytes
 
     # Convert bytes receieved to string
-    def ConvertToString(self, bytes):
-        return str(bytes, 'UTF-8')
+    def ConvertToString(self, inc_bytes):
+        return str(inc_bytes, 'UTF-8')
 
     def __del__(self):
         try:
-            self.p.send_signal(SIGINT) #sending interupt signals to python script to close serial, change to UNIX SIGINT in future
+            #self.p.send_signal(SIGINT) #sending interupt signals to python script to close serial
+            self.p.send_signal(CTRL_C_EVENT) #sending interupt signals to python script to close serial, change to UNIX SIGINT in future
             self.p.terminate() #may need to do p.kill()
             self.conn.close() #close socket
             log.debug('Deleting Serial Communciator Class')
         except:
-            print('failure to delete class properly')
+            log.error('Failure to close Serial Communicator Class properly')
