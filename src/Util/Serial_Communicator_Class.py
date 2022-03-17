@@ -2,6 +2,7 @@
 import logging
 import subprocess
 import socket
+import sys
 from time import sleep
 from signal import SIGINT
 #from signal import CTRL_C_EVENT
@@ -15,7 +16,10 @@ class Serial_Communicator:
     'Constructor'
     def __init__(self, portname, socket_port):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.args = ['python3', 'Util/Serial_Listener.py'] # python3 for unix
+        if sys.platform is 'Linux':
+            self.args = ['python3', 'Util/Serial_Listener.py']  # python3 for unix
+        elif sys.platform is 'Win32':   # double check in future that this works
+            self.args = ['python', 'Util/Serial_Listener.py']    # python for windows
 
         # passing args to process
         self.args.append(portname)
