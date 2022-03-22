@@ -34,7 +34,7 @@ class UART_Serial:
         try:
             # print(portname)
             self.port = portname
-            self.ser = serial.Serial(portname, timeout=1, writeTimeout=1) # may switch read timeout to blocking because separate process
+            self.ser = serial.Serial(portname, timeout=1, writeTimeout=1, stopbits=1) # may switch read timeout to blocking because separate process
             self.ser.baudrate = 115200  # grbl baudrate
             log.info('Serial Port open at port {}'.format(portname))
         except serial.SerialException:
