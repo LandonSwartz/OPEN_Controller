@@ -12,16 +12,24 @@ logging.basicConfig(level=logging.DEBUG,
 
 ser_com = Serial_Communicator('COM4', '50080')
 
-sleep(5)
+sleep(1)
+
+ser_com.ClearReadQueue()
 
 #ser_com.Send('$H\n')
 
 ser_com.Send('$H\n')
 
-sleep(5)
+is_ok = ser_com.Read()
+while is_ok != 'ok':
+    is_ok = ser_com.Read()
+    sleep(0.1)
 
-while True:
-    pass
+print('Finished!')
+
+sleep(1)
+
+ser_com.__del__()
 
 #print(ser_com.Read())
 

@@ -9,7 +9,7 @@ import serial
 # Project Specific Modules
 
 #from Util.Serial_Communicator_Class import Serial_Communicator
-from Serial_Communicator_Class import Serial_Communicator
+from src.Util.Serial_Communicator_Class import Serial_Communicator
 
 log = logging.getLogger('open_controller_log.log')
 
@@ -29,7 +29,9 @@ class Arduino:
     #Read Serial Response
     def Read_Serial(self):
         msg = self.ser.Read()
-        log.debug('Read {} from arduino serial'.format(msg.strip('\n')))
+        if msg is None: # if none then error
+            return None
+        log.debug('Read {} from arduino serial'.format(msg))
         return msg
 
     def __del__(self):

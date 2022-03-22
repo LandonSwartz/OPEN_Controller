@@ -38,7 +38,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 if data:    #if recieved something from socket
                     data_string = str(data, 'UTF-8')
                     #buffer += data_string
-                    logging.debug("client received: {}".format(data_string))
+                    logging.debug("client received: {}".format(data))
                     ser.Write_Data(data) #write to serial
             except socket.timeout: #instead of TimeoutError
                 pass
