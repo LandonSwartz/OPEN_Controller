@@ -1,0 +1,14 @@
+What is needed to finish OPEN CONTROLLER:
+- Serial Working
+	- Get Serial to be able to wait until GRBL sends command then send next when receives 'ok'
+	- thread loop in communicator to queues = next attempt
+	- NEED: testing time
+- Vimba Camera Class
+	- Download packages to pi
+	- NEED: mirco hmdi cable
+	- test
+- Machine.py
+	- Implement Single Cycle
+	- Implement Timelapse
+	- Position Folders
+	

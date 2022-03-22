@@ -7,10 +7,9 @@ import string
 import serial
 
 # Project Specific Modules
-#from src.Util.UART_Serial_class import UART_Serial
-#from src.Util.File_Class import File
 
-from Util.Serial_Communicator_Class import Serial_Communicator
+#from Util.Serial_Communicator_Class import Serial_Communicator
+from Serial_Communicator_Class import Serial_Communicator
 
 log = logging.getLogger('open_controller_log.log')
 
@@ -24,13 +23,13 @@ class Arduino:
 
     #Send Data Over Serial Port
     def Send_Serial(self, msg):
-        log.info('Sending {} through arduino serial'.format(msg))
+        log.debug('Sending {} through arduino serial'.format(msg.strip('\n')))
         self.ser.Send(msg)
 
     #Read Serial Response
     def Read_Serial(self):
         msg = self.ser.Read()
-        log.info('Read {} from arduino serial'.format(msg))
+        log.debug('Read {} from arduino serial'.format(msg.strip('\n')))
         return msg
 
     def __del__(self):

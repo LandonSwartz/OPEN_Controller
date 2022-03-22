@@ -34,7 +34,7 @@ class UART_Serial:
         try:
             # print(portname)
             self.port = portname
-            self.ser = serial.Serial(portname, timeout=1, write_timeout=0.1)
+            self.ser = serial.Serial(portname, timeout=1, writeTimeout=1) # may switch read timeout to blocking because separate process
             self.ser.baudrate = 115200  # grbl baudrate
             log.info('Serial Port open at port {}'.format(portname))
         except serial.SerialException:
@@ -43,12 +43,14 @@ class UART_Serial:
 
     'Reads Data from Serial Port when called'
     def Read_Data(self):
-        #if(self.ser.in_waiting > 0):
-        line = self.ser.readline()
-        log.debug('Read {} from serial port {}'.format(line, self.port))
-            #data.append(codecs.decode(line))
-            #print(line)
-        return bytes(line)
+        if(self.ser.in_waiting > 0):
+            line = self.ser.readline()
+            log.debug('Read {} from serial port {}'.format(line, self.port))
+        #data.append(codecs.decode(line))
+        #print(line)
+            return bytes(line)
+        else:
+            return None
 
     'Write passed data to serial port when called'
     def Write_Data(self, data):

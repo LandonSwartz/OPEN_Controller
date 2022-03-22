@@ -3,8 +3,13 @@
 #from src.Util.Arduino_Class import Arduino
 #from src.Util.File_Class import File
 
-from Util.Arduino_Class import Arduino
-from Util.File_Class import File
+#from Util.Arduino_Class import Arduino
+from Arduino_Class import Arduino
+
+#from Util.File_Class import File
+from File_Class import File
+from time import sleep
+
 
 class GRBL_Arduino(Arduino):
 
@@ -12,6 +17,7 @@ class GRBL_Arduino(Arduino):
 
     def __init__(self, portname):
         super(GRBL_Arduino, self).__init__(portname)
+        sleep(0.5)
         self.HomeCommand()
         #self.SetGRBLSettings()
 
