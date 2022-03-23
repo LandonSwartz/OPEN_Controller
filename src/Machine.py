@@ -37,6 +37,7 @@ class Machine:
 
     def __init__(self):
         # print('Machine class is initiated')
+        self.stop_event = None
         logger.info('Machine class is initiated')
 
         #initating arduinos and camera
@@ -100,7 +101,7 @@ class Machine:
     #Single Cycle Function, may throw into thread
     def SingleCycle(self):
         self.cycle_running = True
-        self.stop_event = threading.Event()
+
         if self.cycle_running is True:
             self.cycle_thread = threading.Thread(target=self.SingleCycleThread)
             self.cycle_thread.start()
@@ -108,32 +109,31 @@ class Machine:
 
     def SingleCycleThread(self):
         wait = None
-
-        #iterate through each position
-        for position in self.commands:
-            #move to position
-            self.grbl_ar.Send_Serial(self.commands[position])
-            #wait until at position
-            while wait is None:
-                wait = self.grbl_ar.Read_Serial()
-                sleep(0.1)
-            sleep(0.5)
-            #capture image
-            frame = self.camera.CaptureFrame()
-            #make filepath and save image
-            filepath = self.Filepath_Set(self.commands.get(position)) #check that this creates right things
-            self.camera.SaveImage(frame, filepath)
+        while self.cycle_running is True:
+            #iterate through each position
+            for position in self.commands:
+                #move to position
+                self.grbl_ar.Send_Serial(self.commands[position])
+                #wait until at position
+                while wait is None:
+                    wait = self.grbl_ar.Read_Serial()
+                    sleep(0.1)
+                sleep(0.5)
+                #capture image
+                frame = self.camera.CaptureFrame()
+                #make filepath and save image
+                filepath = self.Filepath_Set(self.commands.get(position)) #check that this creates right things
+                self.camera.SaveImage(frame, filepath)
 
     #Stops Single Cycle Function
     def StopCycle(self):
-        print('stopping cycle')
+        logging.info('stopping single cycle thread')
         if self.cycle_thread.is_alive():
-            self.stop_event.set() #setting stop event
+            self.cycle_running = False # finish last move then joining thread
 
     #Starts Timelapse
     def StartTimelapse(self):
         print('Start timelapse')
-        self.grbl_ar.Send_Serial('$H\n')
 
     #Stops Timelapse
     def StopTimelapse(self):

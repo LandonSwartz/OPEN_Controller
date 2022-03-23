@@ -23,13 +23,19 @@ ser_com.Send('$H\n')
 is_ok = ser_com.Read()
 while is_ok != 'ok':
     is_ok = ser_com.Read()
-    sleep(0.1)
+    #sleep(0.1)
+
+is_ok = None
+
+ser_com.Send('G90X-10\n')
+
+is_ok = ser_com.Read()
+while is_ok != b'ok\r\n':
+    is_ok = ser_com.Read()
+    #sleep(0.1)
 
 print('Finished!')
 
 sleep(1)
 
 ser_com.__del__()
-
-#print(ser_com.Read())
-

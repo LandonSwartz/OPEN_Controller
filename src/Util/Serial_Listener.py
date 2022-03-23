@@ -43,7 +43,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             except socket.timeout: #instead of TimeoutError
                 pass
 
-            sleep(0.1)
+            #sleep(0.1)
 
             #send data (check serial and do nothing if nothing)
             try:
@@ -55,7 +55,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             except TimeoutError:
                 pass
 
-            sleep(0.1)
+            #sleep(0.1)
     except KeyboardInterrupt:
         logging.info("keyboard interrupt and port closed")
         s.close()

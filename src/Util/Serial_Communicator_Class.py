@@ -49,12 +49,12 @@ class Serial_Communicator:
         self.s.settimeout(0.1)  # timeout set to 1 millisecond after connecting
 
         # starting daemon socket listener thread
-        self.socket_listener = Thread(target=self.listener_thread, args=[socket_port, self.read_Queue, self.send_Queue])
+        self.socket_listener = Thread(target=self.listener_thread)
         self.socket_listener.setDaemon(True)
-        sleep(0.1)
+        #sleep(0.1)
         self.socket_listener.start()
 
-    def listener_thread(self, socket_port, readq, writeq): #TODO check this functions ability to work
+    def listener_thread(self): #TODO check this functions ability to work
         logging.debug('Entered listener thread')
         running = True
 
@@ -63,14 +63,14 @@ class Serial_Communicator:
                 data = self.conn.recv(1024)    # listening from socket
                 if data: #if recieved something from socket
                     data_string = self.ConvertToString(data)
-                    log.info("Read: {}, from serial port in serial communciator".format(data_string))
+                    log.info("Read: {}, from serial port in serial communciator".format(data))
                     self.read_Queue.append(data_string)
             except socket.timeout: #instead of TimeoutError
                 #log.debug('passing')
                 pass
             except ConnectionResetError:
                 running = False
-            sleep(0.1)
+            #sleep(0.1)
 
             try:    # sending to socket (to send to serial)
                 if len(self.send_Queue) > 0:
@@ -83,7 +83,7 @@ class Serial_Communicator:
             #except ConnectionResetError:
                 #running = False
 
-            sleep(0.1)
+            #sleep(0.1)
 
 
     # sends to serial
@@ -95,9 +95,9 @@ class Serial_Communicator:
     # receive from serial
     def Read(self):
         try:
-            #log.debug(self.read_Queue)
+            #log.debug('Before pop, sendq is {}'.format(self.read_Queue))
             to_read = self.read_Queue.pop(0)
-            #log.debug(self.read_Queue)
+            #log.debug('after pop, sendq is {}'.format(self.read_Queue))
             #string = self.ConvertToString(to_read)
             return to_read
         except IndexError:
