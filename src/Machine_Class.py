@@ -1,9 +1,7 @@
 #practice machine class for communicating with GUI
 import logging
 import os
-from datetime import datetime
 from time import sleep
-
 from Util.Event import Event_Obj
 from Util.GRBL_Arduino import GRBL_Arduino
 #from Util.Vimba_Camera_Class import Vimba_Camera
@@ -17,9 +15,10 @@ import threading #for threading things
 
 logger = logging.getLogger('open_controller_log.log')
 
+
 class Machine:
 
-    #Class Variables - constants
+    # Class Variables - constants
 
     # command list
     grbl_commands = File('Setting_Files/grbl_commands.txt')

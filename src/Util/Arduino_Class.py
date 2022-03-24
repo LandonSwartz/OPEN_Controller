@@ -19,8 +19,6 @@ class Arduino:
     #Constructor with passed port name
     def __init__(self, passed_port_name):
         self.serial_port_name = passed_port_name #taking in pass port name
-        #self.socket_port = random.randint(50000, 60000) #making random int for socket port connection
-        #self.ser = Serial_Communicator(passed_port_name, str(self.socket_port)) #starting uart class
         self.ser_port = UART_Serial()
         self.ser_port.Open_Port(passed_port_name)
 

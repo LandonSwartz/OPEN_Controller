@@ -1,17 +1,10 @@
 What is needed to finish OPEN CONTROLLER:
-- Serial Working
-	- NEED: testing time
 - Vimba Camera Class
 	- Download packages to pi
 	- NEED: mirco hmdi cable
 	- test
-- Lights Arduino
-	- Test on machine
-	- Program with commands
 - Machine.py
 	- Implement Single Cycle
 	- Implement Timelapse
 	- Position Folders
 	- Take images
-	- Control Lights
-	
