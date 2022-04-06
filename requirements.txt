@@ -5,3 +5,4 @@ pyserial~=3.4
 tkcalendar~=1.6.1
 Pillow~=7.2.0
 opencv-python~=4.4.0.46
+schedule~=1.1.0

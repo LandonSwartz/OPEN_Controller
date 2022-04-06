@@ -5,7 +5,7 @@ import sys
 
 import tkinter as tk
 from GUI.Main_Application import MainApplication
-from Machine import Machine
+from Machine_Class import Machine
 
 from time import sleep
 

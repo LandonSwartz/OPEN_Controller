@@ -7,8 +7,13 @@ except ImportError:
 from time import sleep
 import socket
 import sys
+import logging
 
-print('starting serial sub process')
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s:%(levelname)s:%(message)s',
+                    datefmt='%m/%d/%Y %I:%M:%S %p')
+
+logging.debug('starting serial sub process')
 sleep(0.1)
 
 portname = sys.argv[1]
@@ -32,27 +37,26 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             
                 if data:    #if recieved something from socket
                     data_string = str(data, 'UTF-8')
-                    print("client received: " + data_string) #TODO change to log eventually
+                    #buffer += data_string
+                    logging.debug("client received: {}".format(data))
                     ser.Write_Data(data) #write to serial
             except socket.timeout: #instead of TimeoutError
-                #print('no data in client')
                 pass
 
-            sleep(0.1)
+            #sleep(0.1)
 
             #send data (check serial and do nothing if nothing)
             try:
                 ser_data = ser.Read_Data() #check to make sure in bytes
                 if ser_data:
-                    s.sendall(ser_data) #send recievd serial data over socket
+                    s.send(ser_data) #send recievd serial data over socket
                     ser_data_string = str(ser_data, 'UTF-8')
-                    print('serial sent: ' + ser_data_string)
+                    logging.debug('serial sent: {}'.format(ser_data))
             except TimeoutError:
-                #print('not able to send from client')
                 pass
 
-            sleep(0.1)
+            #sleep(0.1)
     except KeyboardInterrupt:
-        print("keyboard interrupt and port closed")
+        logging.info("keyboard interrupt and port closed")
         s.close()
         ser.Close_Port()

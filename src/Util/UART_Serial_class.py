@@ -34,7 +34,8 @@ class UART_Serial:
         try:
             # print(portname)
             self.port = portname
-            self.ser = serial.Serial(portname, timeout=1, write_timeout=0.1)
+            self.ser = serial.Serial(portname, timeout=0.1, writeTimeout=0.1, stopbits=1) # may lower timeout to be quickier
+            #self.ser = serial.Serial(portname, writeTimeout=0.1, stopbits=1) # may lower timeout to be quickier
             self.ser.baudrate = 115200  # grbl baudrate
             log.info('Serial Port open at port {}'.format(portname))
         except serial.SerialException:
@@ -43,19 +44,28 @@ class UART_Serial:
 
     'Reads Data from Serial Port when called'
     def Read_Data(self):
-        #if(self.ser.in_waiting > 0):
-        line = self.ser.readline()
-        log.debug('Read {} from serial port {}'.format(line, self.port))
-            #data.append(codecs.decode(line))
-            #print(line)
-        return bytes(line)
+        if(self.ser.in_waiting > 0):
+            line = self.ser.readline()
+            log.debug('Read {} from serial port {}'.format(line, self.port))
+        #data.append(codecs.decode(line))
+        #print(line)
+            return self.ConvertToString(line)
+        else:
+            return None
 
     'Write passed data to serial port when called'
     def Write_Data(self, data):
-        #data_encode = data.encode('utf-8')
-        #print('sent: {}'.format(data_encode))
-        log.debug('Wrote {} to serial port {}'.format(data, self.port))
-        self.ser.write(data)
+        data_encode = self.ConvertToBytes(data)
+        log.debug('Wrote {} to serial port {}'.format(data_encode, self.port))
+        self.ser.write(data_encode)
+
+    # Converting string to bytes to send over socket
+    def ConvertToBytes(self, string):
+        return bytes(string, 'UTF-8') #converting to bytes
+
+    # Convert bytes receieved to string
+    def ConvertToString(self, inc_bytes):
+        return str(inc_bytes, 'UTF-8').strip('\r\n')
         
     def IsDataInSerial(self):
         #print(self.ser.in_waiting)
