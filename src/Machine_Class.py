@@ -4,7 +4,7 @@ import os
 from time import sleep
 from Util.Event import Event_Obj
 from Util.GRBL_Arduino import GRBL_Arduino
-#from Util.Vimba_Camera_Class import Vimba_Camera
+from Util.Vimba_Camera_Class import Vimba_Camera
 from Util.Lights_Arduino import Lights_Arduino
 from Util.File_Class import File
 import time
@@ -39,20 +39,19 @@ class Machine:
     OffCameraSettingsLoaded = Event_Obj()
 
     def __init__(self):
-        # print('Machine class is initiated')
         self.stop_event = None
         logger.info('Machine class is initiated')
 
         #initating arduinos and camera
         self.grbl_ar = GRBL_Arduino('COM4') #GRBL arduino
         #self.lights_ar = Lights_Arduino('portname')
-        #self.camera = Vimba_Camera()
+        self.camera = Vimba_Camera()
 
         self.saveFolderPath = None
         self.cameraSettingsPath = None
         self.timelapse_interval = None
         self.timelapse_end_date = None
-        self.current_Position = None #current position'''
+        self.current_Position = None
 
     def SetSaveFolderPath(self, path):
         # setting path
@@ -61,7 +60,7 @@ class Machine:
         commands = self.grbl_commands.ReturnFileAsList()
 
         #make folders in save folder path
-        if path: #if real path
+        if path:    # if real path
             for position in commands:
                 folder_name = "Position_" + str(commands.index(position)) #this should return the number, may need to add 1 as well
                 folder_path = os.path.join(self.saveFolderPath, folder_name)
@@ -78,14 +77,14 @@ class Machine:
 
     #Function that moves to specific location
     def MoveTo(self, posNum):
-        #print("Moving to position {}".format(posNum))
+        commands = self.grbl_commands.ReturnFileAsList()
         logger.info('Moving to position {}'.format(posNum))
-        self.grbl_ar.Send_Serial(self.commands[posNum]) #sending command
+        # sending command
+        self.grbl_ar.Send_Serial(commands[posNum])
 
-    def CaptureImage(self):
-        # print('Capturing image on vimba camera')
+    def CaptureImage(self, filepath):
         logger.info('Capturing image on vimba camera')
-        self.camera.CaptureFrame()
+        self.camera.CaptureImage(filepath)
 
     # TODO make sure this works
     def Filepath_Set(self, position_number):
@@ -99,7 +98,6 @@ class Machine:
     #Set Current Position, may not need
     def SetCurrentPosition(self, posNum):
         self.current_Position = posNum
-        # print("current_position is {}".format(self.current_Position))
         logger.debug('Current Position is {}'.format(self.current_Position))
 
     #Single Cycle Function, may throw into thread
@@ -134,11 +132,8 @@ class Machine:
                 self.grbl_ar.Send_Serial(position)
                 #wait until at position
                 sleep(5)
-                #capture image
-                #frame = self.camera.CaptureFrame()
-                #make filepath and save image
-                #filepath = self.Filepath_Set(self.commands.get(position)) #check that this creates right things
-                #self.camera.SaveImage(frame, filepath)
+                filepath = self.Filepath_Set(commands.get(position)) #check that this creates right things #TODO MAKE SURE WORK
+                self.camera.CaptureImage(filepath)
             else:
                 pass
 
@@ -204,5 +199,5 @@ class Machine:
     def __del__(self):
         self.grbl_ar.__del__()
         #self.lights_ar.__del__()
-        #self.camera.__del__() #may not need to delete
+        self.camera.__del__() #may not need to delete
 

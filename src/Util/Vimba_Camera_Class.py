@@ -31,6 +31,10 @@ class Vimba_Camera(object):
             with cams[0] as cam:
                 cam.load_settings(self.settings_file, PersistType.All)
 
+    def CaptureImage(self, filepath):
+        frame = self.CaptureFrame()
+        self.SaveImage(frame, filepath)
+
     #gets and return Frame already converted
     def CaptureFrame(self):
         with Vimba.get_instance() as vimba_ins: 
