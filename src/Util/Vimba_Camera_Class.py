@@ -10,8 +10,8 @@ log = logging.getLogger('open_controller_log.log')
 
 class Vimba_Camera(object):
 
-    vimba_ins = Vimba.get_instance()
-    settings_file = 'src/Setting_Files/camera_settings.xml' #TODO set this constant
+    #vimba_ins = Vimba.get_instance()
+    #settings_file = 'src/Setting_Files/camera_settings.xml' #TODO set this constant
 
     def __init__(self):
         log.debug('Vimba Camera Class initiated')
@@ -20,8 +20,9 @@ class Vimba_Camera(object):
      #   self.save_location = saveLocation #file path to save folder location
 
     def Connect(self):
-        cams = self.vimba_ins.get_all_cameras()
-        return cams[0] #returns only instance of all cameras
+    	with Vimba.get_instance() as vimba_ins:
+        	cams = vimba_ins.get_all_cameras()
+        	return cams[0] #returns only instance of all cameras
 
     #def SetSaveLocation(self, save_location_path):
         #self.save_location = save_location_path #pass folder path for save location
@@ -31,11 +32,14 @@ class Vimba_Camera(object):
 
     #gets and return Frame already converted
     def CaptureFrame(self):
-        frame = self.camera.get_frame()
-        frame.convert_pixel_format(PixelFormat.BayerGB12)
-        log.info('Image Captured with vimba camera')
-        #self.SaveImage(frame)
-        return frame  # may not return
+    	with Vimba.get_instance() as vimba_ins: 
+    		cams = vimba_ins.get_all_cameras()
+    		with cams[0] as cam:
+				frame = cam.get_frame()
+				frame.convert_pixel_format(PixelFormat.BayerGB12)
+				log.info('Image Captured with vimba camera')
+				#self.SaveImage(frame)
+				return frame  # may not return
 
     def SaveImage(self, frame, filename):
         cv2.imwrite(filename, frame.as_opencv_image())
