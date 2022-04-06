@@ -14,18 +14,13 @@ log = logging.getLogger('open_controller_log.log')
 class Vimba_Camera(object):
 
     #vimba_ins = Vimba.get_instance()
-    #settings_file = 'src/Setting_Files/camera_settings.xml' #TODO set this constant
+    settings_file = 'src/Setting_Files/camera_settings.xml' #TODO set this constant
 
     def __init__(self):
         log.debug('Vimba Camera Class initiated')
         self.save_location = None
-        self.camera = self.Connect() # because only one cam should be attached
+        #self.LoadSettings()
      #   self.save_location = saveLocation #file path to save folder location
-
-    def Connect(self):
-    	with Vimba.get_instance() as vimba_ins:
-        	cams = vimba_ins.get_all_cameras()
-        	return cams[0] #returns only instance of all cameras
 
     #def SetSaveLocation(self, save_location_path):
         #self.save_location = save_location_path #pass folder path for save location
@@ -41,19 +36,20 @@ class Vimba_Camera(object):
         with Vimba.get_instance() as vimba_ins: 
             cams = vimba_ins.get_all_cameras()
             with cams[0] as cam:
-                fmts = cam.get_pixel_formats()
-                print(fmts)
-                fmts = intersect_pixel_formats(cam.get_pixel_formats(), COLOR_PIXEL_FORMATS)
-                fmts = intersect_pixel_formats(fmts, OPENCV_PIXEL_FORMATS)
-                print(fmts)
+                # converting to Bayer Format
+                cam.set_pixel_format(PixelFormat.BayerGR12)
+                #Capturing frame
                 frame = cam.get_frame()
-                frame.convert_pixel_format(PixelFormat.BayerGR8)
                 log.info('Image Captured with vimba camera')
-                #self.SaveImage(frame)
                 return frame  # may not return
 
     def SaveImage(self, frame, filename):
-        cv2.imwrite(filename, frame.as_opencv_image())
+        #get the raw image as numpy array from frame
+        image = frame.as_numpy_ndarray()
+        #use opencv to convert from raw Bayer to RGB
+        rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        #write image to disk
+        cv2.imwrite(filename, rgb_image)
         log.info('Image writen to disk at {}'.format(filename))
 
     def __del__(self):
