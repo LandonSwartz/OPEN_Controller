@@ -9,8 +9,8 @@ import serial
 # Project Specific Modules
 
 #from Util.Serial_Communicator_Class import Serial_Communicator
-from src.Util.Serial_Communicator_Class import Serial_Communicator
-from src.Util.UART_Serial_class import UART_Serial
+#from Util.Serial_Communicator_Class import Serial_Communicator
+from Util.UART_Serial_class import UART_Serial
 
 log = logging.getLogger('open_controller_log.log')
 

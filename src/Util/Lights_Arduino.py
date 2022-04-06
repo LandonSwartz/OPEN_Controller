@@ -1,6 +1,6 @@
 #Lights Arduino Subclass
 
-from src.Util.Arduino_Class import Arduino
+from Util.Arduino_Class import Arduino
 
 #TODO - fill out commands
 

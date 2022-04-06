@@ -21,7 +21,7 @@ class Machine:
     # Class Variables - constants
 
     # command list
-    grbl_commands = File('Setting_Files/grbl_commands.txt')
+    #grbl_commands = File('Setting_Files/grbl_commands.txt')
     start_of_night = 22
     end_of_night = 7
 
@@ -43,7 +43,7 @@ class Machine:
         logger.info('Machine class is initiated')
 
         #initating arduinos and camera
-        self.grbl_ar = GRBL_Arduino('COM4') #GRBL arduino
+        #self.grbl_ar = GRBL_Arduino('COM4') #GRBL arduino
         #self.lights_ar = Lights_Arduino('portname')
         self.camera = Vimba_Camera()
 
@@ -197,7 +197,7 @@ class Machine:
         self.OffCameraSettingsLoaded += objMethod
 
     def __del__(self):
-        self.grbl_ar.__del__()
+        #self.grbl_ar.__del__()
         #self.lights_ar.__del__()
         self.camera.__del__() #may not need to delete
 

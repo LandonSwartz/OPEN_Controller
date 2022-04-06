@@ -6,17 +6,15 @@
 #from Util.Arduino_Class import Arduino
 import logging
 
-from src.Util.Arduino_Class import Arduino
-
-#from Util.File_Class import File
-from src.Util.File_Class import File
+from Util.Arduino_Class import Arduino
+from Util.File_Class import File
 from time import sleep
 
 
 class GRBL_Arduino(Arduino):
 
-    GRBL_Settings = File('Setting_Files/GRBL_settings.txt')
-    GRBL_Commands = File('Setting_Files/grbl_commands.txt') # may not be able to use
+    #GRBL_Settings = File('Setting_Files/GRBL_settings.txt')
+    #GRBL_Commands = File('Setting_Files/grbl_commands.txt') # may not be able to use
 
     def __init__(self, portname):
         super(GRBL_Arduino, self).__init__(portname)

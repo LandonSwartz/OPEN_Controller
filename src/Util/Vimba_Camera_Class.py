@@ -5,6 +5,7 @@ import os.path
 import cv2
 from vimba import *
 from datetime import datetime
+from time import sleep
 
 log = logging.getLogger('open_controller_log.log')
 
@@ -41,9 +42,11 @@ class Vimba_Camera(object):
             cams = vimba_ins.get_all_cameras()
             with cams[0] as cam:
                 # converting to Bayer Format
-                cam.set_pixel_format(PixelFormat.BayerGR12)
+                cam.set_pixel_format(PixelFormat.BayerGR8)
                 #Capturing frame
+                sleep(2)
                 frame = cam.get_frame()
+                sleep(2)
                 log.info('Image Captured with vimba camera')
                 return frame  # may not return
 
@@ -51,7 +54,7 @@ class Vimba_Camera(object):
         #get the raw image as numpy array from frame
         image = frame.as_numpy_ndarray()
         #use opencv to convert from raw Bayer to RGB
-        rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        rgb_image = cv2.cvtColor(image, cv2.COLOR_BAYER_GR2RGB)
         #write image to disk
         cv2.imwrite(filename, rgb_image)
         log.info('Image writen to disk at {}'.format(filename))
