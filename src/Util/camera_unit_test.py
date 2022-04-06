@@ -3,6 +3,11 @@
 
 from Vimba_Camera_Class import Vimba_Camera
 from time import sleep
+import logging
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s:%(levelname)s:%(message)s',
+                    datefmt='%m/%d/%Y %I:%M:%S %p')
 
 cam = Vimba_Camera()
 sleep(0.5)

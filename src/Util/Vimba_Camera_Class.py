@@ -8,6 +8,9 @@ from datetime import datetime
 
 log = logging.getLogger('open_controller_log.log')
 
+'''Using with statement throughout this class to grab and autodelete vimba camera.
+    The instance still persist.'''
+
 class Vimba_Camera(object):
 
     #vimba_ins = Vimba.get_instance()
@@ -28,18 +31,26 @@ class Vimba_Camera(object):
         #self.save_location = save_location_path #pass folder path for save location
 
     def LoadSettings(self):
-        self.camera.load_settings(self.settings_file, PersistType.All)
+        with Vimba.get_instance() as vimba_ins:  
+            cams = vimba_ins.get_all_cameras()
+            with cams[0] as cam:
+                cam.load_settings(self.settings_file, PersistType.All)
 
     #gets and return Frame already converted
     def CaptureFrame(self):
-    	with Vimba.get_instance() as vimba_ins: 
-    		cams = vimba_ins.get_all_cameras()
-    		with cams[0] as cam:
-				frame = cam.get_frame()
-				frame.convert_pixel_format(PixelFormat.BayerGB12)
-				log.info('Image Captured with vimba camera')
-				#self.SaveImage(frame)
-				return frame  # may not return
+        with Vimba.get_instance() as vimba_ins: 
+            cams = vimba_ins.get_all_cameras()
+            with cams[0] as cam:
+                fmts = cam.get_pixel_formats()
+                print(fmts)
+                fmts = intersect_pixel_formats(cam.get_pixel_formats(), COLOR_PIXEL_FORMATS)
+                fmts = intersect_pixel_formats(fmts, OPENCV_PIXEL_FORMATS)
+                print(fmts)
+                frame = cam.get_frame()
+                frame.convert_pixel_format(PixelFormat.BayerGR8)
+                log.info('Image Captured with vimba camera')
+                #self.SaveImage(frame)
+                return frame  # may not return
 
     def SaveImage(self, frame, filename):
         cv2.imwrite(filename, frame.as_opencv_image())
