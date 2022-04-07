@@ -43,7 +43,7 @@ class Machine:
         logger.info('Machine class is initiated')
 
         #initating arduinos and camera
-        #self.grbl_ar = GRBL_Arduino('COM4') #GRBL arduino
+        #self.grbl_ar = GRBL_Arduino('/dev/ttyAMA0') #GRBL arduino
         #self.lights_ar = Lights_Arduino('portname')
         self.camera = Vimba_Camera()
 
