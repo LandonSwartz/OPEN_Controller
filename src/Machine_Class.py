@@ -9,7 +9,7 @@ from Util.Lights_Arduino import Lights_Arduino
 from Util.File_Class import File
 import time
 import schedule
-from datetime import datetime
+from datetime import datetime, date
 
 import threading #for threading things
 
@@ -50,9 +50,11 @@ class Machine:
 
         self.saveFolderPath = None
         self.cameraSettingsPath = None
-        self.timelapse_interval = None
-        self.timelapse_end_date = None
+        self.timelapse_interval = 2
+        self.timelapse_end_date = date.today()
         self.current_Position = None
+        self.timelapse_start_of_night = None
+        self.timelapse_end_of_night = None
 
     def SetSaveFolderPath(self, path):
         # setting path
@@ -81,10 +83,25 @@ class Machine:
         self.cameraSettingsPath = path
 
     def SetTimelapseInterval(self, interval):
-        self.timelapse_interval = interval
+        logger.debug("Timelapse interval is set to: {}".format(interval))
+        self.timelapse_interval = int(interval)
+        
+    def SetTimelapseEndDate(self, end_date):
+        end_date_datetime = datetime.combine(end_date, datetime.max.time())
+        logger.debug("Timelapse end date is set to: {}".format(end_date_datetime))
+        self.timelapse_end_date = end_date_datetime
+        
+    def SetTimelapseStartOfNight(self, start_of_night):
+        logger.debug("Timelapse start of night is set to: {}".format(start_of_night))
+        self.timelapse_start_of_night = start_of_night
+        
+    def SetTimelapseEndOfNight(self, end_of_night):
+        end_of_night_datetime = datetime.strptime(end_of_night, '%Y-%m-%d %H:%M:%S')
+        logger.debug("Timelapse end of night is set to: {}".format(end_of_night_datetime))
+        self.timelapse_end_of_night = end_of_night_datetime
 
     # Function that moves to specific location
-    # TODO fix move to bug, stops only after doing it once
+    # TODO fix move to bug, stops only after doiconvert string to datetime in pythonng it once
     def MoveTo(self, posNum):
         commands = self.grbl_commands.ReturnFileAsList()
         logger.info('Moving to position {}'.format(posNum))
@@ -177,22 +194,52 @@ class Machine:
         self.timelapse_running = True
 
         if self.timelapse_running is True:
-            timelapse_thread = threading.Thread(target=self.TimelapseThread)
+            timelapse_thread = threading.Thread(target=self.TimelapseThread, daemon = True)
             timelapse_thread.start()
-            timelapse_thread.join()  # wait until done, may not need
+            #timelapse_thread.join()  # wait until done, may not need
 
         self.timelapse_running = False
 
     def TimelapseThread(self):
-        current_date = time.time()
+        
+        #starting cycle
+        self.SingleCycle()
+        
+        current_date = datetime.now()
 
-        schedule.every(self.timelapse_interval).hour.until(self.timelapse_end_date).do(self.SingleCycle) #can change and set schedule with this using GUI!
+        schedule.every(self.timelapse_interval).hours.until(self.timelapse_end_date).do(self.SingleCycle) #can change and set schedule with this using GUI!
 
-        while self.timelapse_end_date - current_date > 0 and self.timelapse_running is True:
+        while self.timelapse_end_date > current_date and self.timelapse_running is True:
             schedule.run_pending()
-            sleep(1)
-            logging.debug('waiting... {} secs left'.format(round(self.timelapse_end_date - current_date)))
-            current_date = time.time()
+            #sleep(1)
+            counter = 60;
+            start = time.time()
+        
+            while True:
+                if time.time() - start > 1:
+                    start = time.time()
+                    counter = counter - 1
+            
+                    logger.debug("{} seconds remaining".format(counter))
+            
+                    if counter <= 0:
+                        break
+            logging.debug('waiting... {} left'.format(abs(self.timelapse_end_date - current_date)))
+            current_date = datetime.now()
+            
+    def TimeToWait():
+        counter = 60;
+        start = time.time()
+        
+        while True:
+            if time.time() - start > 1:
+                start = time.time()
+                counter = counter - 1
+            
+                log.debug("{} seconds remaining".format(counter))
+            
+                if counter <= 0:
+                    break
 
     #Stops Timelapse
     def StopTimelapse(self):

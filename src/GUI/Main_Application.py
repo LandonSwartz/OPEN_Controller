@@ -50,4 +50,10 @@ class MainApplication(tk.Frame):
         self.manual_control_frame.AddSubscriberForManualGrowlightOffBtnPressed(self.machine.GrowLights_Off)
 
         #timelapse frame events
-        self.timelapse_frame.AddSubscriberOnStartButtonPressed(self.machine.SingleCycle)
+        self.timelapse_frame.AddSubscriberOnStartButtonPressed(self.machine.StartTimelapse)
+        self.timelapse_frame.AddSubscriberOnStopButtonPressed(self.machine.StopTimelapse)
+        self.timelapse_frame.AddSubscriberOnIntervalChanged(self.machine.SetTimelapseInterval)
+        #self.timelapse_frame.AddSubscriberOnIntervalUnitChanged(self.) #if changing timelapse interval
+        self.timelapse_frame.AddSubscriberOnEndDateChanged(self.machine.SetTimelapseEndDate)
+        self.timelapse_frame.AddSubscriberOnStartNightChanged(self.machine.SetTimelapseStartOfNight)
+        self.timelapse_frame.AddSubscriberOnEndNightChanged(self.machine.SetTimelapseEndOfNight)
