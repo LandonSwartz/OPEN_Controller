@@ -56,6 +56,7 @@ class Vimba_Camera(object):
         #use opencv to convert from raw Bayer to RGB
         rgb_image = cv2.cvtColor(image, cv2.COLOR_BAYER_GR2RGB)
         #write image to disk
+        log.debug("filename for SaveImage is {}".format(filename))
         cv2.imwrite(filename, rgb_image)
         log.info('Image writen to disk at {}'.format(filename))
 

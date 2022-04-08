@@ -10,9 +10,10 @@ class File(object):
     current_working_dir = os.getcwd()
 
     def __init__(self, filename):
-        filename_full = os.path.join(self.current_working_dir, filename)
-        #print(filename_full)
-        self.file_obj = self.OpenFileRead(filename_full)
+        #filename_full = os.path.join(self.current_working_dir, filename)
+        log.debug('Filepath for file is: {}'.format(filename))
+        self.file_obj = self.OpenFileRead(filename)
+        self.lines = self.file_obj.readlines()
 
     # Opens file with given filename
     def OpenFileRead(self, filename: string):
@@ -42,8 +43,7 @@ class File(object):
 
     # Return file as list for iterating
     def ReturnFileAsList(self):
-        lines = self.file_obj.readlines()
-        return lines
+        return self.lines
 
     def __del__(self):
         self.file_obj.close()

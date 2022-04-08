@@ -3,18 +3,18 @@
 import tkinter as tk
 
 #for single cycle section
-from Machine import Machine
+#from Machine import Machine
 from Util.Event import Event_Obj
 
-class SingleCycle(tk.Frame, Machine):
+class SingleCycle(tk.Frame):
 
     OnSingleCycle = Event_Obj()
     OnStopSingleCycle = Event_Obj()
 
     #init
-    def __init__(self, parent, Machine):
+    def __init__(self, parent): #no need to pass machine I think
         tk.Frame.__init__(self, width=600)
-        self.machine = Machine
+        #self.machine = Machine
 
 
         Single_cycle_label = tk.Label(self, text='Single Cycle').grid(row=0, column=0, columnspan=2, padx=5, pady=5)

@@ -2,7 +2,8 @@
 import logging
 import tkinter as tk
 from tkinter import ttk
-from src.Util.Event import Event_Obj
+from Util.Event import Event_Obj
+
 
 log = logging.getLogger('open_controller_log.log')
 

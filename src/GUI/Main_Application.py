@@ -18,7 +18,7 @@ class MainApplication(tk.Frame):
         Title(parent).grid(row=0, column=0)
         self.status_frame = StatusFrame(self, self.machine)
         self.status_frame.grid(row=1, column=0)
-        self.single_cycle = SingleCycle(self, self.machine)
+        self.single_cycle = SingleCycle(self)
         self.single_cycle.grid(row=2, column=0)
         self.timelapse_frame = TimelapseFrame(self, self.machine)
         self.timelapse_frame.grid(row=3, column=0)
@@ -44,10 +44,10 @@ class MainApplication(tk.Frame):
         #self.manual_control_frame.AddSubscriberForPositionNumChanged(self.machine.SetCurrentPosition)
         self.manual_control_frame.AddSubscriberForMoveToBtnPressed(self.machine.MoveTo)
         self.manual_control_frame.AddSubscriberForManualImageCaptureBtnPressed(self.machine.CaptureImage)
-        #self.manual_control_frame.AddSubscriberForManualBacklightOnBtnPressed()
-        #self.manual_control_frame.AddSubscriberForManualBacklightOffBtnPressed()
-        #self.manual_control_frame.AddSubscriberForManualGrowlightOnBtnPressed()
-        #self.manual_control_frame.AddSubscriberForManualGrowlightOffBtnPressed()
+        self.manual_control_frame.AddSubscriberForManualBacklightOnBtnPressed(self.machine.BackLights_On)
+        self.manual_control_frame.AddSubscriberForManualBacklightOffBtnPressed(self.machine.BackLights_Off)
+        self.manual_control_frame.AddSubscriberForManualGrowlightOnBtnPressed(self.machine.GrowLights_On)
+        self.manual_control_frame.AddSubscriberForManualGrowlightOffBtnPressed(self.machine.GrowLights_Off)
 
         #timelapse frame events
         self.timelapse_frame.AddSubscriberOnStartButtonPressed(self.machine.SingleCycle)

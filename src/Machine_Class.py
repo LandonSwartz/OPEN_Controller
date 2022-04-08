@@ -9,7 +9,7 @@ from Util.Lights_Arduino import Lights_Arduino
 from Util.File_Class import File
 import time
 import schedule
-from datetime import datetime, time
+from datetime import datetime
 
 import threading #for threading things
 
@@ -19,9 +19,10 @@ logger = logging.getLogger('open_controller_log.log')
 class Machine:
 
     # Class Variables - constants
-
+    
     # command list
-    #grbl_commands = File('Setting_Files/grbl_commands.txt')
+    grbl_commands = File(os.path.join(os.getcwd(), 'src/Setting_Files/grbl_commands.txt'))
+    #grbl_commands = File('/home/landon/Desktop/OPEN_Controller/src/Setting_Files/grbl_commands.txt')
     start_of_night = 22
     end_of_night = 7
 
@@ -43,8 +44,8 @@ class Machine:
         logger.info('Machine class is initiated')
 
         #initating arduinos and camera
-        #self.grbl_ar = GRBL_Arduino('/dev/ttyAMA0') #GRBL arduino
-        #self.lights_ar = Lights_Arduino('portname')
+        self.grbl_ar = GRBL_Arduino('/dev/ttyACM0') #GRBL arduino, plugged in first
+        self.lights_ar = Lights_Arduino('/dev/ttyACM1') #plugged in second
         self.camera = Vimba_Camera()
 
         self.saveFolderPath = None
@@ -58,16 +59,23 @@ class Machine:
         self.saveFolderPath = path
         logger.debug('save folder setting path is {}'.format(self.saveFolderPath))
         commands = self.grbl_commands.ReturnFileAsList()
-
+        #removing homing signals
+        commands = commands[1:-1]
+        
         #make folders in save folder path
         if path:    # if real path
             for position in commands:
                 folder_name = "Position_" + str(commands.index(position)) #this should return the number, may need to add 1 as well
                 folder_path = os.path.join(self.saveFolderPath, folder_name)
                 try:
-                    os.makedirs(folder_path)
+                    if not os.path.isdir(folder_path): # if folder not made then make it
+                        os.makedirs(folder_path)
+                        logger.debug('Folder made at {}'.format(folder_path))
                 except OSError:
+                    logger.error('Fialure to make folder {}'.format(folder_path))
                     pass # pass if already exist
+                
+        return
 
     def SetCameraSettingsPath(self, path):
         self.cameraSettingsPath = path
@@ -75,12 +83,13 @@ class Machine:
     def SetTimelapseInterval(self, interval):
         self.timelapse_interval = interval
 
-    #Function that moves to specific location
+    # Function that moves to specific location
+    # TODO fix move to bug, stops only after doing it once
     def MoveTo(self, posNum):
         commands = self.grbl_commands.ReturnFileAsList()
         logger.info('Moving to position {}'.format(posNum))
         # sending command
-        self.grbl_ar.Send_Serial(commands[posNum])
+        self.grbl_ar.Send_Serial(commands[int(posNum)])
 
     def CaptureImage(self, filepath):
         logger.info('Capturing image on vimba camera')
@@ -89,8 +98,8 @@ class Machine:
     # TODO make sure this works
     def Filepath_Set(self, position_number):
         current_time = datetime.now().strftime('%d-%m-%Y_%H-%M-%S')
-        filename = current_time + '_' + position_number
-        folder_name = "Position_" + position_number
+        filename = current_time + '_' + str(position_number) + '.png'
+        folder_name = "Position_" + str(position_number)
         folder_path = os.path.join(self.saveFolderPath, folder_name)
         filepath = os.path.join(folder_path, filename)
         return filepath
@@ -103,16 +112,17 @@ class Machine:
     #Single Cycle Function, may throw into thread
     def SingleCycle(self):
         self.cycle_running = True
-        current_time = time.time()
+        '''current_time = time.time()
         morning_time = "07:00:00"
         morning_time = time.strftime(morning_time)
         evening_time = "22:00:00"
+        morning_time = time.strftime(evening_time)
 
         # check if night time and return cancel job
         if self.in_between(datetime.now().time(),
                            time(self.start_of_night),
                            time(self.end_of_night)):
-            return schedule.CancelJob # cancel job because its nighttime
+            return schedule.CancelJob # cancel job because its nighttime'''
 
         if self.cycle_running is True:
             cycle_thread = threading.Thread(target=self.SingleCycleThread)
@@ -123,19 +133,31 @@ class Machine:
         self.cycle_running = False
 
     def SingleCycleThread(self):
+        logger.debug('single cycle thread is running')
         commands = self.grbl_commands.ReturnFileAsList()
+        self.lights_ar.GrowlightsOff()
+        self.lights_ar.BackLightsOn()
+        
+        first_command = commands[0] # slicing first command off (ususally homing)
+        commands = commands[1:]
+        self.grbl_ar.Send_Serial(first_command)
+        sleep(3)
 
         #iterate through each position
         for position in commands:
         #move to position
             if self.cycle_running is True:
                 self.grbl_ar.Send_Serial(position)
-                #wait until at position
-                sleep(5)
-                filepath = self.Filepath_Set(commands.get(position)) #check that this creates right things #TODO MAKE SURE WORK
-                self.camera.CaptureImage(filepath)
+                if not 'H' in position: #if not homing command
+                    #wait until at position
+                    sleep(5)
+                    filepath = self.Filepath_Set(commands.index(position)) #check that this creates right things #TODO MAKE SURE WORK
+                    self.camera.CaptureImage(filepath)
             else:
                 pass
+            
+        self.lights_ar.GrowlightsOn()
+        self.lights_ar.BackLightsOff()
 
     # Sees if time is between two ppints, useful for determining nighttime
     def in_between(self, now, start, end):
@@ -176,6 +198,22 @@ class Machine:
     def StopTimelapse(self):
         logging.info('Stopping timelapse')
         self.timelapse_running = False
+    
+    def BackLights_On(self):
+        logging.debug('Turning backlights on from machine class')
+        self.lights_ar.BackLightsOn()
+    
+    def BackLights_Off(self):
+        logging.debug('Turning backlights off from machine class')
+        self.lights_ar.BackLightsOff()
+        
+    def GrowLights_On(self):
+        logging.debug('Turning growlights on from machine class')
+        self.lights_ar.GrowlightsOn()
+        
+    def GrowLights_Off(self):
+        logging.debug('Turning growlights off from machine class')
+        self.lights_ar.GrowlightsOff()
 
     #event handling
     def AddSubscribersForOnConnectedGRBLEvent(self, objMethod):
@@ -197,7 +235,7 @@ class Machine:
         self.OffCameraSettingsLoaded += objMethod
 
     def __del__(self):
-        #self.grbl_ar.__del__()
-        #self.lights_ar.__del__()
+        self.grbl_ar.__del__()
+        self.lights_ar.__del__()
         self.camera.__del__() #may not need to delete
 

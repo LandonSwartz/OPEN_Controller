@@ -6,7 +6,7 @@ from tkinter import ttk
 import tkcalendar
 
 #for event handling
-from src.Util.Event import Event_Obj
+from Util.Event import Event_Obj
 
 log = logging.getLogger('open_controller_log.log')
 

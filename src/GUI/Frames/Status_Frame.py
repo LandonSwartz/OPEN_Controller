@@ -3,9 +3,9 @@ import logging
 import tkinter as tk
 from tkinter import *
 from tkinter import filedialog
-from PIL import ImageTk, Image
+from PIL import Image, ImageTk
 import os
-from src.Util.Event import Event_Obj
+from Util.Event import Event_Obj
 
 log = logging.getLogger('open_controller_log.log')
 
@@ -29,19 +29,19 @@ class StatusFrame(tk.Frame):
         self.GRBL_status_graphic = tk.Label(self, image=red_light)
         self.GRBL_status_graphic.image = red_light
         self.GRBL_status_graphic.grid(row=1, column=2, pady=5, padx=5)
-        self.GRBL_status_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.GRBL_status_graphic))
+        #self.GRBL_status_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.GRBL_status_graphic))
 
         Lights_connection = tk.Label(self, text='Lights Connection:').grid(row=1, column=3, padx=5, pady=5, sticky='w')
         self.Lights_status_graphic = tk.Label(self, image=red_light)
         self.Lights_status_graphic.image = red_light
         self.Lights_status_graphic.grid(row=1, column=4, padx=5, pady=5)
-        self.Lights_status_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.Lights_status_graphic))
+        #self.Lights_status_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.Lights_status_graphic))
 
         Camera_Setting_status = tk.Label(self, text='Camera Status:').grid(row=2, column=1, padx=5, pady=5, sticky='w')
         self.Camera_setting_graphic = tk.Label(self, image=red_light)
         self.Camera_setting_graphic.image = red_light
         self.Camera_setting_graphic.grid(row=2, column=2, padx=5, pady=5)
-        self.Camera_setting_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.Camera_setting_graphic))
+        #self.Camera_setting_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.Camera_setting_graphic))
 
         Save_Folder_Label = tk.Label(self, text='Save Folder Location:').grid(row=3, column=1, padx=5, pady=5)
         self.Save_Folder_Textbox = tk.Text(self, height=1, width=20, font=('Arial', 12))
@@ -52,7 +52,7 @@ class StatusFrame(tk.Frame):
     # file explorer window
     def browseFiles(self, event=None):
         # creating path to save folder
-        filename = filedialog.askdirectory(initialdir="/", title="Select a File")
+        filename = filedialog.askdirectory(initialdir="/home/", title="Select a File")
         if filename:
             filepath: str = os.path.abspath(filename)
             log.debug('Save Folder path is {}'.format(filepath))
