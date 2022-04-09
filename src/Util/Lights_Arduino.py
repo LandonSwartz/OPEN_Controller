@@ -13,7 +13,9 @@ class Lights_Arduino(Arduino):
         super(Lights_Arduino, self).__init__(portname)
 
         # clearing on startup the lights
-        self.AllOff()
+        #self.AllOff()
+        self.BackLightsOff()
+        self.GrowlightsOn()
 
     ### Combined Functions ###
 
@@ -64,5 +66,9 @@ class Lights_Arduino(Arduino):
 
     # deleting method that turns off lights on way out
     def __del__(self):
-        self.AllOff()
+        #self.AllOff()
+        self.BackLightsOff()
+        # Growlights are normally clsoed relay so leaving on to not hurt relay when shutting down
+        # can be manually turned off with switch on cord
+        self.GrowlightsOn() 
 
