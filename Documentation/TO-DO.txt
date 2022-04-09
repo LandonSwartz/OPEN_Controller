@@ -1,10 +1,7 @@
 What is needed to finish OPEN CONTROLLER:
-- Vimba Camera Class
-	- Download packages to pi
-	- NEED: mirco hmdi cable
-	- test
-- Machine.py
-	- Implement Single Cycle
-	- Implement Timelapse
-	- Position Folders
-	- Take images
+- Put single cycle into background with gui
+- Set positions
+- Attach rest of backlights
+- Attach growlights
+- Implement nighttime constraints
+    - little more testing but seems to be working
