@@ -48,13 +48,13 @@ class Machine:
         self.lights_ar = Lights_Arduino('/dev/ttyACM1') #plugged in second
         self.camera = Vimba_Camera()
 
-        self.saveFolderPath = None
+        self.saveFolderPath = os.getcwd() # just to have something set on the program just in case
         self.cameraSettingsPath = None
         self.timelapse_interval = 2
-        self.timelapse_end_date = date.today()
+        self.timelapse_end_date = datetime.combine(datetime.now(), datetime.max.time())
         self.current_Position = None
-        self.timelapse_start_of_night = None
-        self.timelapse_end_of_night = None
+        self.timelapse_start_of_night = datetime.strptime("21", "%H")
+        self.timelapse_end_of_night = datetime.strptime("7", "%H")
 
     def SetSaveFolderPath(self, path):
         # setting path
@@ -132,10 +132,6 @@ class Machine:
     #Single Cycle Function, may throw into thread
     def SingleCycle(self):
         self.cycle_running = True
-        '''morning_time = "10:00:00"
-        morning_time = datetime.strptime(morning_time, '%I:%M:%S') # from time library
-        evening_time = "11:40:00"
-        evening_time = datetime.strptime(evening_time, '%I:%M:%S')'''
 
         # check if night time and pass if it is
         if self.in_between(datetime.now().time(),
