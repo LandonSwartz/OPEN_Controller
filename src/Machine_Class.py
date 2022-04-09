@@ -129,23 +129,22 @@ class Machine:
     #Single Cycle Function, may throw into thread
     def SingleCycle(self):
         self.cycle_running = True
-        '''current_time = time.time()
-        morning_time = "07:00:00"
-        morning_time = time.strftime(morning_time)
-        evening_time = "22:00:00"
-        morning_time = time.strftime(evening_time)
+        morning_time = "10:00:00"
+        morning_time = datetime.strptime(morning_time, '%I:%M:%S') # from time library
+        evening_time = "11:40:00"
+        evening_time = datetime.strptime(evening_time, '%I:%M:%S')
 
-        # check if night time and return cancel job
+        # check if night time and pass if it is
         if self.in_between(datetime.now().time(),
-                           time(self.start_of_night),
-                           time(self.end_of_night)):
-            return schedule.CancelJob # cancel job because its nighttime'''
-
-        if self.cycle_running is True:
-            cycle_thread = threading.Thread(target=self.SingleCycleThread)
-            cycle_thread.start()
-            cycle_thread.join() #wait until done, may not need
-            cycle_thread = None
+                           morning_time.time(),
+                           evening_time.time()):
+            logger.debug('It is nighttime')
+        else: # it is not nighttime
+            if self.cycle_running is True:
+                cycle_thread = threading.Thread(target=self.SingleCycleThread)
+                cycle_thread.start()
+                cycle_thread.join() #wait until done, may not need
+                cycle_thread = None
 
         self.cycle_running = False
 
@@ -194,11 +193,22 @@ class Machine:
         self.timelapse_running = True
 
         if self.timelapse_running is True:
-            timelapse_thread = threading.Thread(target=self.TimelapseThread, daemon = True)
-            timelapse_thread.start()
+                    #starting cycle
+            self.SingleCycle()
+        
+            current_date = datetime.now()
+
+            schedule.every(self.timelapse_interval).minutes.until(self.timelapse_end_date).do(self.SingleCycle) #can change and set schedule with this using GUI!
+
+            self.stop_run_continously = self.run_continuously()
+            
+            # don't think need to make thread still since running in background now
+            #timelapse_thread = threading.Thread(target=self.TimelapseThread)
+            #timelapse_thread.start()
             #timelapse_thread.join()  # wait until done, may not need
 
         self.timelapse_running = False
+        #timelapse_thread.join()  # wait until done, may not need
 
     def TimelapseThread(self):
         
@@ -207,25 +217,35 @@ class Machine:
         
         current_date = datetime.now()
 
-        schedule.every(self.timelapse_interval).hours.until(self.timelapse_end_date).do(self.SingleCycle) #can change and set schedule with this using GUI!
+        schedule.every(self.timelapse_interval).minutes.until(self.timelapse_end_date).do(self.SingleCycle) #can change and set schedule with this using GUI!
 
-        while self.timelapse_end_date > current_date and self.timelapse_running is True:
-            schedule.run_pending()
-            #sleep(1)
-            counter = 60;
-            start = time.time()
-        
-            while True:
-                if time.time() - start > 1:
-                    start = time.time()
-                    counter = counter - 1
+        self.stop_run_continously = self.run_continuously()
             
-                    logger.debug("{} seconds remaining".format(counter))
-            
-                    if counter <= 0:
-                        break
-            logging.debug('waiting... {} left'.format(abs(self.timelapse_end_date - current_date)))
-            current_date = datetime.now()
+    # example from schedule library website
+    # link: https://schedule.readthedocs.io/en/stable/background-execution.html
+    def run_continuously(self, interval=1):
+        """Continuously run, while executing pending jobs at each
+        elapsed time interval.
+        @return cease_continuous_run: threading. Event which can
+        be set to cease continuous run. Please note that it is
+        *intended behavior that run_continuously() does not run
+        missed jobs*. For example, if you've registered a job that
+        should run every minute and you set a continuous run
+        interval of one hour then your job won't be run 60 times
+        at each interval but only once.
+        """
+        cease_continuous_run = threading.Event()
+
+        class ScheduleThread(threading.Thread):
+            @classmethod
+            def run(cls):
+                while not cease_continuous_run.is_set():
+                    schedule.run_pending()
+                    time.sleep(interval)
+
+        continuous_thread = ScheduleThread()
+        continuous_thread.start()
+        return cease_continuous_run
             
     def TimeToWait():
         counter = 60;
@@ -244,7 +264,8 @@ class Machine:
     #Stops Timelapse
     def StopTimelapse(self):
         logging.info('Stopping timelapse')
-        self.timelapse_running = False
+        self.stop_run_continuously.set() #stopping continous run thread
+        #self.timelapse_running = False
     
     def BackLights_On(self):
         logging.debug('Turning backlights on from machine class')
