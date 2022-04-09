@@ -93,12 +93,15 @@ class Machine:
         
     def SetTimelapseStartOfNight(self, start_of_night):
         logger.debug("Timelapse start of night is set to: {}".format(start_of_night))
-        self.timelapse_start_of_night = start_of_night
+        start_of_night_dt = datetime.strptime(start_of_night, "%H")
+        logger.debug("start of night_dt value is {}".format(start_of_night_dt))
+        self.timelapse_start_of_night = start_of_night_dt
         
     def SetTimelapseEndOfNight(self, end_of_night):
-        end_of_night_datetime = datetime.strptime(end_of_night, '%Y-%m-%d %H:%M:%S')
-        logger.debug("Timelapse end of night is set to: {}".format(end_of_night_datetime))
-        self.timelapse_end_of_night = end_of_night_datetime
+        logger.debug("Timelapse end of night is set to: {}".format(end_of_night))
+        end_of_night_dt = datetime.strptime(end_of_night, "%H")
+        logger.debug("end of night_dt value is {}".format(end_of_night_dt))
+        self.timelapse_end_of_night = end_of_night_dt
 
     # Function that moves to specific location
     # TODO fix move to bug, stops only after doiconvert string to datetime in pythonng it once
@@ -129,15 +132,15 @@ class Machine:
     #Single Cycle Function, may throw into thread
     def SingleCycle(self):
         self.cycle_running = True
-        morning_time = "10:00:00"
+        '''morning_time = "10:00:00"
         morning_time = datetime.strptime(morning_time, '%I:%M:%S') # from time library
         evening_time = "11:40:00"
-        evening_time = datetime.strptime(evening_time, '%I:%M:%S')
+        evening_time = datetime.strptime(evening_time, '%I:%M:%S')'''
 
         # check if night time and pass if it is
         if self.in_between(datetime.now().time(),
-                           morning_time.time(),
-                           evening_time.time()):
+                           self.timelapse_start_of_night.time(),
+                           self.timelapse_end_date.time()):
             logger.debug('It is nighttime')
         else: # it is not nighttime
             if self.cycle_running is True:

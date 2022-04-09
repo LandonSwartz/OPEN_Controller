@@ -111,7 +111,9 @@ class TimelapseFrame(tk.Frame):
 
     def StartNightComboChanged(self, event ):
         log.info("Start of Night is {} PM".format(self.start_night_time.get()))
-        self.OnStartNightChanged(self.start_night_time.get())
+        start_of_night_pm = int(self.start_night_time.get()) + 12
+        log.info("Start of Night is {} PM".format(start_of_night_pm))
+        self.OnStartNightChanged(str(start_of_night_pm))
 
     def EndDateEntrySelected(self, event):
         log.info("Selected end date is {}".format(self.end_date_cal.get_date()))
