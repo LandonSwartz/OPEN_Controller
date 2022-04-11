@@ -15,12 +15,12 @@ log = logging.getLogger('open_controller_log.log')
 class Vimba_Camera(object):
 
     #vimba_ins = Vimba.get_instance()
-    settings_file = 'src/Setting_Files/camera_settings.xml' #TODO set this constant
+    settings_file = 'src/Setting_Files/OPEN_Root_Settings.xml' #TODO set this constant
 
     def __init__(self):
         log.debug('Vimba Camera Class initiated')
         self.save_location = None
-        #self.LoadSettings()
+        self.LoadSettings()
      #   self.save_location = saveLocation #file path to save folder location
 
     #def SetSaveLocation(self, save_location_path):
@@ -31,6 +31,7 @@ class Vimba_Camera(object):
             cams = vimba_ins.get_all_cameras()
             with cams[0] as cam:
                 cam.load_settings(self.settings_file, PersistType.All)
+                log.info("Camera Settings File Loaded")
 
     def CaptureImage(self, filepath):
         frame = self.CaptureFrame()

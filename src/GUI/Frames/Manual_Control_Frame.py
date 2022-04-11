@@ -80,7 +80,7 @@ class ManualControlFrame(tk.Frame):
 
     # manually capture image
     def ManualImageCaputre(self):
-        self.OnCaptureImageEvent()
+        self.OnCaptureImageEvent('manual_image.png')
         print('Manual Image button clicked')
         log.info('Manual Image Button clicked')
 
