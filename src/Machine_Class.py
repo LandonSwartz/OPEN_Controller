@@ -165,9 +165,10 @@ class Machine:
                 self.grbl_ar.Send_Serial(position)
                 if not 'H' in position: #if not homing command
                     #wait until at position
-                    sleep(5)
+                    sleep(3)
                     filepath = self.Filepath_Set(commands.index(position)) #check that this creates right things #TODO MAKE SURE WORK
                     self.camera.CaptureImage(filepath)
+                    sleep(1)
             else:
                 pass
             
