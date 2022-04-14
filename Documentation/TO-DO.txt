@@ -1,7 +1,2 @@
 What is needed to finish OPEN CONTROLLER:
-- Put single cycle into background with gui
 - Set positions
-- Attach rest of backlights
-- Attach growlights
-- Implement nighttime constraints
-    - little more testing but seems to be working

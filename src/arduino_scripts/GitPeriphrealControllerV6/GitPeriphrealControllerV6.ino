@@ -167,7 +167,7 @@ void printError() {
 //This function turns the grow lights on and off (they are not neopixels)
 void handleGrowLightSwitch(char* cmdString) {
   char value = cmdString[3];
-  togglePin(GROWLIGHT, !ctob(value)); //negated value because high turns off
+  togglePin(GROWLIGHT, ctob(value)); //high turns on relay because normally open, so stops off relay
 }
 
 //This function turns the backlight on and off (they are neopixels)
