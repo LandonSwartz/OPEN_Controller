@@ -2,8 +2,6 @@
 
 from Util.Arduino_Class import Arduino
 
-#TODO - fill out commands
-
 class Lights_Arduino(Arduino):
 
     backlight_state: bool = False
@@ -50,6 +48,9 @@ class Lights_Arduino(Arduino):
     def GrowlightsOff(self):
         self.ser_port.Write_Data('S1V0\n')
         self.growlight_state = False
+        
+        
+    ### Getter and Setter Functions ###
 
     #Encapsulation Functions
     def GetBackLightStatus(self):
@@ -63,12 +64,15 @@ class Lights_Arduino(Arduino):
 
     def SetGrowlightStatus(self, state: bool):
         self.growlight_state = state
+        
+        
+    ###  Delete Function ### 
 
     # deleting method that turns off lights on way out
     def __del__(self):
         #self.AllOff()
         self.BackLightsOff()
-        # Growlights are normally clsoed relay so leaving on to not hurt relay when shutting down
+        # Growlights are normally closed relay so leaving on to not hurt relay when shutting down
         # can be manually turned off with switch on cord
         self.GrowlightsOn() 
 

@@ -22,14 +22,8 @@ class Machine:
     
     # command list
     grbl_commands = File(os.path.join(os.getcwd(), 'src/Setting_Files/grbl_commands.txt'))
-    #grbl_commands = File('/home/landon/Desktop/OPEN_Controller/src/Setting_Files/grbl_commands.txt')
     start_of_night = 22
     end_of_night = 7
-
-    #cameraSettingsPath: string
-    #saveFolderPath: string
-    #timelapse_interval: int
-    #timelapse_end_date: datetime
 
     #Events for communicating with GUI
     OnGRBLConnected = Event_Obj()
@@ -55,6 +49,11 @@ class Machine:
         self.current_Position = None
         self.timelapse_start_of_night = datetime.strptime("21", "%H")
         self.timelapse_end_of_night = datetime.strptime("7", "%H")
+        self.stop_run_continuously = None
+        
+        #setting night schedules
+        self.SetTimelapseStartOfNight(self.timelapse_start_of_night.strftime('%H'))
+        self.SetTimelapseEndOfNight(self.timelapse_end_of_night.strftime('%H'))
 
     def SetSaveFolderPath(self, path):
         # setting path
@@ -92,16 +91,44 @@ class Machine:
         self.timelapse_end_date = end_date_datetime
         
     def SetTimelapseStartOfNight(self, start_of_night):
+        # state flag for if schedule running
+        self.start_of_night_schedule_flag = 0;
+        
         logger.debug("Timelapse start of night is set to: {}".format(start_of_night))
         start_of_night_dt = datetime.strptime(start_of_night, "%H")
         logger.debug("start of night_dt value is {}".format(start_of_night_dt))
         self.timelapse_start_of_night = start_of_night_dt
         
+        # schedule it to turn off growlights
+        if self.start_of_night_schedule_flag == 0:
+            schedule.every().day.at(start_of_night_dt.strftime('%H:%M')).do(self.GrowLights_Off)
+            self.stop_run_continously_start_night = self.run_continuously()
+            self.start_of_night_schedule_flag = 1
+        else: # stop current run and start new one with new parameters
+            self.stop_run_continously_start_night.set()
+            schedule.every().day.at(start_of_night_dt.strftime('%H:%M')).do(self.GrowLights_Off)
+            self.stop_run_continously_start_night = self.run_continuously()
+            self.start_of_night_schedule_flag = 1 # redundant but just in case
+        
     def SetTimelapseEndOfNight(self, end_of_night):
+        #end of night schedule flag for if schedule set yet
+        self.end_of_night_schedule_flag = 0;
+        
         logger.debug("Timelapse end of night is set to: {}".format(end_of_night))
         end_of_night_dt = datetime.strptime(end_of_night, "%H")
         logger.debug("end of night_dt value is {}".format(end_of_night_dt))
         self.timelapse_end_of_night = end_of_night_dt
+                      
+        # schedule it to turn on growlights
+        if self.end_of_night_schedule_flag == 0:
+            schedule.every().day.at(end_of_night_dt.strftime('%H:%M')).do(self.GrowLights_Off)
+            self.stop_run_continously_end_night = self.run_continuously()
+            self.end_of_night_schedule_flag = 1
+        else: # stop current run and start new one with new parameters
+            self.stop_run_continously_end_night.set()
+            schedule.every().day.at(end_of_night_dt.strftime('%H:%M')).do(self.GrowLights_Off)
+            self.stop_run_continously_end_night = self.run_continuously()
+            self.end_of_night_schedule_flag = 1 # redundant but just in case
 
     # Function that moves to specific location
     # TODO fix move to bug, stops only after doiconvert string to datetime in pythonng it once
@@ -198,7 +225,7 @@ class Machine:
         
             current_date = datetime.now()
 
-            schedule.every(self.timelapse_interval).minutes.until(self.timelapse_end_date).do(self.SingleCycle) #can change and set schedule with this using GUI!
+            schedule.every(self.timelapse_interval).hours.until(self.timelapse_end_date).do(self.SingleCycle) #can change and set schedule with this using GUI!
 
             self.stop_run_continously = self.run_continuously()
             
@@ -303,6 +330,13 @@ class Machine:
         self.OffCameraSettingsLoaded += objMethod
 
     def __del__(self):
+        # stopping schedule jobs
+        self.stop_run_continously_start_night.set()
+        self.stop_run_continously_end_night.set()
+        if self.stop_run_continuously is not None: #if set
+            self.stop_run_continuously.set() #stopping continous run thread
+        
+        #deleting other objects
         self.grbl_ar.__del__()
         self.lights_ar.__del__()
         self.camera.__del__() #may not need to delete

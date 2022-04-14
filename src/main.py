@@ -26,6 +26,8 @@ def main():
     sleep(2)
     #run window
     app.mainloop()
+    
+    machine.__del__()
 
 if __name__ == '__main__':
     '''logging.basicConfig(filename='open_controller_log.log',
