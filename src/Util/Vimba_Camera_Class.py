@@ -15,7 +15,7 @@ log = logging.getLogger('open_controller_log.log')
 class Vimba_Camera(object):
 
     #vimba_ins = Vimba.get_instance()
-    settings_file = 'src/Setting_Files/OPEN_Root_Settings.xml' #TODO set this constant
+    settings_file = 'src/Setting_Files/OPEN_Root_Settings_V2.xml' #TODO set this constant
 
     def __init__(self):
         log.debug('Vimba Camera Class initiated')
