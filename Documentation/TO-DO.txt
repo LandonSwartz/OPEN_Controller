@@ -1,2 +1,11 @@
-What is needed to finish OPEN CONTROLLER:
-- Set positions
+Verison Goals:
+- 0.9.0
+	- functional machine with everything needed
+- 1.0.0
+	- installer/deployment ready
+	- requirements file working
+- 1.0.1
+	- Documentation throughout project
+	- Readme.md ready for deployment
+- 1.1.0
+	- enable/disable stepper motor
