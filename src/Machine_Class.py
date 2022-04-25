@@ -16,26 +16,6 @@ import threading #for threading things
 
 logger = logging.getLogger('open_controller_log.log')
 
-class Thread_Worker(threading.Thread):
-
-    thread_running = False # flag for thread running or not
-
-    def __init__(self, func_to_execute):
-        super().__init__()
-        self.target = func_to_execute
-        self.
-
-    def run(self):
-        self.func.start()
-        self.thread_running = True
-        self.func.join()
-
-    def stop_thread(self):
-        if self.is_alive():
-            logger.debug('Thread is running and alive')
-            self.func.terminate()
-            self.
-
 class Machine:
 
     # Class Variables - constants
