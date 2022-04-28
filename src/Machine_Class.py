@@ -10,11 +10,11 @@ from Util.File_Class import File
 import time
 import schedule
 from datetime import datetime, date
+from threading import Thread # for threads
 
 import threading #for threading things
 
 logger = logging.getLogger('open_controller_log.log')
-
 
 class Machine:
 
@@ -131,7 +131,6 @@ class Machine:
             self.end_of_night_schedule_flag = 1 # redundant but just in case
 
     # Function that moves to specific location
-    # TODO fix move to bug, stops only after doiconvert string to datetime in pythonng it once
     def MoveTo(self, posNum):
         commands = self.grbl_commands.ReturnFileAsList()
         logger.info('Moving to position {}'.format(posNum))
@@ -151,12 +150,7 @@ class Machine:
         filepath = os.path.join(folder_path, filename)
         return filepath
 
-    #Set Current Position, may not need
-    def SetCurrentPosition(self, posNum):
-        self.current_Position = posNum
-        logger.debug('Current Position is {}'.format(self.current_Position))
-
-    #Single Cycle Function, may throw into thread
+    # Single Cycle Function, may throw into thread
     def SingleCycle(self):
         self.cycle_running = True
 
@@ -170,10 +164,10 @@ class Machine:
                 cycle_thread = threading.Thread(target=self.SingleCycleThread)
                 cycle_thread.start()
                 cycle_thread.join() #wait until done, may not need
-                cycle_thread = None
+                #cycle_thread = None
+                self.cycle_running = False
 
-        self.cycle_running = False
-
+    # Thread for single cycle
     def SingleCycleThread(self):
         logger.debug('single cycle thread is running')
         commands = self.grbl_commands.ReturnFileAsList()
@@ -228,14 +222,8 @@ class Machine:
             schedule.every(self.timelapse_interval).hours.until(self.timelapse_end_date).do(self.SingleCycle) #can change and set schedule with this using GUI!
 
             self.stop_run_continously = self.run_continuously()
-            
-            # don't think need to make thread still since running in background now
-            #timelapse_thread = threading.Thread(target=self.TimelapseThread)
-            #timelapse_thread.start()
-            #timelapse_thread.join()  # wait until done, may not need
 
         self.timelapse_running = False
-        #timelapse_thread.join()  # wait until done, may not need
 
     def TimelapseThread(self):
         

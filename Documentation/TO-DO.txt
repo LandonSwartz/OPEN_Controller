@@ -9,3 +9,8 @@ Verison Goals:
 	- Readme.md ready for deployment
 - 1.1.0
 	- enable/disable stepper motor
+	
+Other things to consider:
+	- docker for deployment
+	- make clikcing file execute it in python
+	- virtual environment for project
