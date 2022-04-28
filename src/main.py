@@ -30,13 +30,13 @@ def main():
     machine.__del__()
 
 if __name__ == '__main__':
-    '''logging.basicConfig(filename='open_controller_log.log',
+    logging.basicConfig(filename='open_controller_log.log',
                         level=logging.DEBUG,
                         format='%(asctime)s:%(levelname)s:%(message)s',
-                        datefmt='%m/%d/%Y %I:%M:%S %p')'''
-    logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s:%(levelname)s:%(message)s',
                         datefmt='%m/%d/%Y %I:%M:%S %p')
+    '''logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s:%(levelname)s:%(message)s',
+                        datefmt='%m/%d/%Y %I:%M:%S %p')'''
     logger = logging.getLogger('open_controller_log.log')
-    logger.info('Application started and logging started')
+    logger.info('\n====== Application started and logging started ======')
     main()

@@ -21,17 +21,20 @@ class Vimba_Camera(object):
         log.debug('Vimba Camera Class initiated')
         self.save_location = None
         self.LoadSettings()
-     #   self.save_location = saveLocation #file path to save folder location
-
-    #def SetSaveLocation(self, save_location_path):
-        #self.save_location = save_location_path #pass folder path for save location
+        #self.vimba = Vimba.get_instance()
 
     def LoadSettings(self):
-        with Vimba.get_instance() as vimba_ins:  
-            cams = vimba_ins.get_all_cameras()
-            with cams[0] as cam:
-                cam.load_settings(self.settings_file, PersistType.All)
-                log.info("Camera Settings File Loaded")
+        try: 
+            with Vimba.get_instance() as vimba: 
+                cams = vimba.get_all_cameras()
+                with cams[0] as cam:
+                    cam.load_settings(self.settings_file, PersistType.All)
+                    log.info("Camera Settings File Loaded")
+                    cam.GVSPAdjustPacketSize()
+        except IndexError as e:
+            log.info("Index Error: {}".format(e))
+        except:
+            log.info('Failure to load Camera Settings')
 
     def CaptureImage(self, filepath):
         frame = self.CaptureFrame()
@@ -39,27 +42,35 @@ class Vimba_Camera(object):
 
     #gets and return Frame already converted
     def CaptureFrame(self):
-        with Vimba.get_instance() as vimba_ins: 
-            cams = vimba_ins.get_all_cameras()
-            with cams[0] as cam:
-                # converting to Bayer Format
-                cam.set_pixel_format(PixelFormat.BayerGR8)
-                #Capturing frame
-                sleep(2)
-                frame = cam.get_frame()
-                sleep(2)
-                log.info('Image Captured with vimba camera')
-                return frame  # may not return
+        try:
+            with Vimba.get_instance() as vimba: 
+                cams = vimba.get_all_cameras()
+                with cams[0] as cam:
+                    # converting to Bayer Format
+                    cam.set_pixel_format(PixelFormat.BayerGR8)
+                    #Capturing frame
+                    sleep(2)
+                    frame = cam.get_frame()
+                    sleep(2)
+                    log.info('Image Captured with vimba camera')
+                    return frame  # may not return
+        except IndexError as e:
+            log.info("Index Error: {}".format(e))
+        except:
+            log.info('Failure to load Camera Settings')
 
     def SaveImage(self, frame, filename):
-        #get the raw image as numpy array from frame
-        image = frame.as_numpy_ndarray()
-        #use opencv to convert from raw Bayer to RGB
-        rgb_image = cv2.cvtColor(image, cv2.COLOR_BAYER_GR2RGB)
-        #write image to disk
-        log.debug("filename for SaveImage is {}".format(filename))
-        cv2.imwrite(filename, rgb_image)
-        log.info('Image writen to disk at {}'.format(filename))
+        try:
+            #get the raw image as numpy array from frame
+            image = frame.as_numpy_ndarray()
+            #use opencv to convert from raw Bayer to RGB
+            rgb_image = cv2.cvtColor(image, cv2.COLOR_BAYER_GR2RGB)
+            #write image to disk
+            log.debug("filename for SaveImage is {}".format(filename))
+            cv2.imwrite(filename, rgb_image)
+            log.info('Image writen to disk at {}'.format(filename))
+        except:
+            log.info("failure to save {} at this time".format(filename))
 
     def __del__(self):
         log.debug('Vimba Camera class deleted')

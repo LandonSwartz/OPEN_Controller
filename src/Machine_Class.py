@@ -11,10 +11,18 @@ import time
 import schedule
 from datetime import datetime, date
 from threading import Thread # for threads
+import threading
 
 import threading #for threading things
 
 logger = logging.getLogger('open_controller_log.log')
+
+'''#own thread for single cycle
+class SingleCycleThread(Thread):
+    def __init__(self, grbl_ar, lights_ar, ):
+        super().__init__(self)
+        
+        self.'''
 
 class Machine:
 
@@ -160,12 +168,15 @@ class Machine:
                            self.timelapse_end_date.time()):
             logger.debug('It is nighttime')
         else: # it is not nighttime
-            if self.cycle_running is True:
-                cycle_thread = threading.Thread(target=self.SingleCycleThread)
-                cycle_thread.start()
-                cycle_thread.join() #wait until done, may not need
-                #cycle_thread = None
-                self.cycle_running = False
+            try:
+                if self.cycle_running is True:
+                    cycle_thread = threading.Thread(target=self.SingleCycleThread)
+                    cycle_thread.start()
+                    cycle_thread.join() #wait until done, may not need
+                    #cycle_thread = None
+                    self.cycle_running = False
+            except:
+                log.debug("Single cycle thread failed")
 
     # Thread for single cycle
     def SingleCycleThread(self):
