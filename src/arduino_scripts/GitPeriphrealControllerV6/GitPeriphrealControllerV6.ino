@@ -21,7 +21,7 @@
 #define NEOPIN_3 5
 #define NEOPIN_4 6
 
-#define GROWLIGHT 8
+#define GROWLIGHT 9
 #define INPUT_SIZE 30
 #define BRIGHTNESS 180
 
@@ -43,6 +43,7 @@ bool lightsOn = false;
 
 void setup() {
   //Neostrip start-up, initialize pins, turn off
+  Serial.println("arduino on");
 
 #if defined (__AVR_ATtiny85__)
   if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
