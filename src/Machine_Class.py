@@ -29,7 +29,7 @@ class Machine:
     # Class Variables - constants
     
     # command list
-    grbl_commands = File(os.path.join(os.getcwd(), 'src/Setting_Files/grbl_commands.txt'))
+    grbl_commands = File(os.path.join(os.getcwd(), 'src/Setting_Files/grbl_commands_1.txt'))
     start_of_night = 22
     end_of_night = 7
 
@@ -108,15 +108,19 @@ class Machine:
         self.timelapse_start_of_night = start_of_night_dt
         
         # schedule it to turn off growlights
-        if self.start_of_night_schedule_flag == 0:
+        '''if self.start_of_night_schedule_flag == 0:
             schedule.every().day.at(start_of_night_dt.strftime('%H:%M')).do(self.GrowLights_Off)
-            self.stop_run_continously_start_night = self.run_continuously()
+            #self.stop_run_continously_start_night = self.run_continuously()
             self.start_of_night_schedule_flag = 1
         else: # stop current run and start new one with new parameters
-            self.stop_run_continously_start_night.set()
+            #self.stop_run_continously_start_night.set()
             schedule.every().day.at(start_of_night_dt.strftime('%H:%M')).do(self.GrowLights_Off)
-            self.stop_run_continously_start_night = self.run_continuously()
-            self.start_of_night_schedule_flag = 1 # redundant but just in case
+            #self.stop_run_continously_start_night = self.run_continuously()
+            self.start_of_night_schedule_flag = 1 # redundant but just in case'''
+            
+    def TimelapseStartOfNightThread(self):
+        job_thread = threading.Thread(target=self.GrowLights_Off())
+        job_thread.start()
         
     def SetTimelapseEndOfNight(self, end_of_night):
         #end of night schedule flag for if schedule set yet
@@ -128,15 +132,15 @@ class Machine:
         self.timelapse_end_of_night = end_of_night_dt
                       
         # schedule it to turn on growlights
-        if self.end_of_night_schedule_flag == 0:
-            schedule.every().day.at(end_of_night_dt.strftime('%H:%M')).do(self.GrowLights_Off)
-            self.stop_run_continously_end_night = self.run_continuously()
+        '''if self.end_of_night_schedule_flag == 0:
+            schedule.every().day.at(end_of_night_dt.strftime('%H:%M')).do(self.GrowLights_On)
+            #self.stop_run_continously_end_night = self.run_continuously(interval=1)
             self.end_of_night_schedule_flag = 1
         else: # stop current run and start new one with new parameters
-            self.stop_run_continously_end_night.set()
-            schedule.every().day.at(end_of_night_dt.strftime('%H:%M')).do(self.GrowLights_Off)
-            self.stop_run_continously_end_night = self.run_continuously()
-            self.end_of_night_schedule_flag = 1 # redundant but just in case
+            #self.stop_run_continously_end_night.set()
+            schedule.every().day.at(end_of_night_dt.strftime('%H:%M')).do(self.GrowLights_On)
+            #self.stop_run_continously_end_night = self.run_continuously(interval=1)
+            self.end_of_night_schedule_flag = 1 # redundant but just in case'''
 
     # Function that moves to specific location
     def MoveTo(self, posNum):
@@ -168,15 +172,15 @@ class Machine:
                            self.timelapse_end_date.time()):
             logger.debug('It is nighttime')
         else: # it is not nighttime
+            cycle_thread = threading.Thread(target=self.SingleCycleThread)
             try:
                 if self.cycle_running is True:
-                    cycle_thread = threading.Thread(target=self.SingleCycleThread)
                     cycle_thread.start()
                     cycle_thread.join() #wait until done, may not need
-                    #cycle_thread = None
                     self.cycle_running = False
             except:
-                log.debug("Single cycle thread failed")
+                logger.debug("Single cycle thread failed")
+                cycle_thread = None
 
     # Thread for single cycle
     def SingleCycleThread(self):
@@ -187,6 +191,8 @@ class Machine:
         
         first_command = commands[0] # slicing first command off (ususally homing)
         commands = commands[1:]
+        self.grbl_ar.ser_port.ser.flushInput()        # flush input messages
+        sleep(0.1)
         self.grbl_ar.Send_Serial(first_command)
         sleep(3)
 
@@ -197,7 +203,7 @@ class Machine:
                 self.grbl_ar.Send_Serial(position)
                 if not 'H' in position: #if not homing command
                     #wait until at position
-                    sleep(3)
+                    sleep(5)
                     filepath = self.Filepath_Set(commands.index(position)) #check that this creates right things #TODO MAKE SURE WORK
                     self.camera.CaptureImage(filepath)
                     sleep(1)
@@ -230,26 +236,29 @@ class Machine:
         
             current_date = datetime.now()
 
-            schedule.every(self.timelapse_interval).hours.until(self.timelapse_end_date).do(self.SingleCycle) #can change and set schedule with this using GUI!
-
+            schedule.every(self.timelapse_interval).hours.until(self.timelapse_end_date).do(self.run_threaded, self.SingleCycleThread) #can change and set schedule with this using GUI!
+            schedule.every().day.at(self.timelapse_start_of_night.strftime('%H:%M')).do(self.run_threaded, self.GrowLights_Off)
+            schedule.every().day.at(self.timelapse_end_of_night.strftime('%H:%M')).do(self.run_threaded, self.GrowLights_On)
+            
             self.stop_run_continously = self.run_continuously()
+            logger.info("All jobs on schedule is {}".format(schedule.get_jobs()))
 
-        self.timelapse_running = False
-
-    def TimelapseThread(self):
+    '''def TimelapseThread(self):
         
         #starting cycle
         self.SingleCycle()
         
         current_date = datetime.now()
 
-        schedule.every(self.timelapse_interval).minutes.until(self.timelapse_end_date).do(self.SingleCycle) #can change and set schedule with this using GUI!
+        schedule.every(self.timelapse_interval).hours.until(self.timelapse_end_date).do(self.SingleCycle) #can change and set schedule with this using GUI!
 
+        #self.stop_run_continously = self.run_continuously(self.timelapse_interval*60*60)
         self.stop_run_continously = self.run_continuously()
+        log.info("All jobs on schedule is {}".format(schedule.get_jobs()))'''
             
     # example from schedule library website
     # link: https://schedule.readthedocs.io/en/stable/background-execution.html
-    def run_continuously(self, interval=1):
+    def run_continuously(self, interval=1): 
         """Continuously run, while executing pending jobs at each
         elapsed time interval.
         @return cease_continuous_run: threading. Event which can
@@ -272,25 +281,18 @@ class Machine:
         continuous_thread = ScheduleThread()
         continuous_thread.start()
         return cease_continuous_run
-            
-    def TimeToWait():
-        counter = 60;
-        start = time.time()
-        
-        while True:
-            if time.time() - start > 1:
-                start = time.time()
-                counter = counter - 1
-            
-                log.debug("{} seconds remaining".format(counter))
-            
-                if counter <= 0:
-                    break
+    
+    #from scheduler documentation of parallel execution
+    # https://schedule.readthedocs.io/en/stable/parallel-execution.html
+    def run_threaded(job_func):
+        job_thread = threading.Thread(target=job_func)
+        job_thread.start()
 
     #Stops Timelapse
     def StopTimelapse(self):
         logging.info('Stopping timelapse')
         self.stop_run_continuously.set() #stopping continous run thread
+        self.timelapse_running = False
         #self.timelapse_running = False
     
     def BackLights_On(self):
@@ -330,9 +332,10 @@ class Machine:
 
     def __del__(self):
         # stopping schedule jobs
-        self.stop_run_continously_start_night.set()
-        self.stop_run_continously_end_night.set()
+        #self.stop_run_continously_start_night.set()
+        #self.stop_run_continously_end_night.set()
         if self.stop_run_continuously is not None: #if set
+            logger.debug("stopping timelapse with setting")
             self.stop_run_continuously.set() #stopping continous run thread
         
         #deleting other objects

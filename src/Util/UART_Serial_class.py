@@ -55,9 +55,14 @@ class UART_Serial:
 
     'Write passed data to serial port when called'
     def Write_Data(self, data):
-        data_encode = self.ConvertToBytes(data)
-        log.debug('Wrote {} to serial port {}'.format(data_encode, self.port))
-        self.ser.write(data_encode)
+        try:
+            data_encode = self.ConvertToBytes(data)
+            log.debug('Wrote {} to serial port {}'.format(data_encode, self.port))
+            self.ser.write(data_encode)
+        except SerialTimeException as e:
+            log.error("write timeout error in uart_serial: {}".format(e))
+        except:
+            log.error("General error in Write_Data of UART_Serial_Class")
 
     # Converting string to bytes to send over socket
     def ConvertToBytes(self, string):
@@ -90,7 +95,7 @@ class UART_Serial:
 
     'Closes Port when called'
     def Close_Port(self):
-        print('Port {} is closed'.format(self.ser.name))
+        log.info('Port {} is closed'.format(self.ser.name))
         self.ser.close()
 
     'Returns name of port when called'
@@ -101,4 +106,4 @@ class UART_Serial:
     def __del__(self):
         # closing port
         self.Close_Port()
-        log.info('Serial Port {} closed'.format(self.port))
+        #log.info('Serial Port {} closed'.format(self.port))

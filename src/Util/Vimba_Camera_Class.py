@@ -30,11 +30,13 @@ class Vimba_Camera(object):
                 with cams[0] as cam:
                     cam.load_settings(self.settings_file, PersistType.All)
                     log.info("Camera Settings File Loaded")
-                    cam.GVSPAdjustPacketSize()
+                    cam.GVSPAdjustPacketSize.run()
+                    while not cam.GVSPAdjustPacketSize.is_done():
+                        pass
         except IndexError as e:
-            log.info("Index Error: {}".format(e))
-        except:
-            log.info('Failure to load Camera Settings')
+            log.error("Index Error: {}".format(e))
+        except Exception as e:
+            log.error('Failure to load Camera Settings because {}'.format(e))
 
     def CaptureImage(self, filepath):
         frame = self.CaptureFrame()
@@ -43,6 +45,7 @@ class Vimba_Camera(object):
     #gets and return Frame already converted
     def CaptureFrame(self):
         try:
+            self.LoadSettings()
             with Vimba.get_instance() as vimba: 
                 cams = vimba.get_all_cameras()
                 with cams[0] as cam:
@@ -55,9 +58,9 @@ class Vimba_Camera(object):
                     log.info('Image Captured with vimba camera')
                     return frame  # may not return
         except IndexError as e:
-            log.info("Index Error: {}".format(e))
+            log.error("Index Error: {}".format(e))
         except:
-            log.info('Failure to load Camera Settings')
+            log.error('Failure to load Camera Settings')
 
     def SaveImage(self, frame, filename):
         try:
