@@ -22,7 +22,7 @@ class StatusFrame(tk.Frame):
         self.machine = Machine
 
         #have to declare after tk.Frame
-        red_light = ImageTk.PhotoImage(Image.open('src/GUI/assets/red_light.png'))
+        '''red_light = ImageTk.PhotoImage(Image.open('src/GUI/assets/red_light.png'))
 
         GRBL_connection = tk.Label(self, text="GRBL Connection:").grid(row=1, column=1, pady=5, padx=5, sticky='w')
 
@@ -42,12 +42,13 @@ class StatusFrame(tk.Frame):
         self.Camera_setting_graphic.image = red_light
         self.Camera_setting_graphic.grid(row=2, column=2, padx=5, pady=5)
         #self.Camera_setting_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.Camera_setting_graphic))
-
+'''
+        
         Save_Folder_Label = tk.Label(self, text='Save Folder Location:').grid(row=3, column=1, padx=5, pady=5)
         self.Save_Folder_Textbox = tk.Text(self, height=1, width=20, font=('Arial', 12))
         self.Save_Folder_Textbox.grid(row=3, column=2, columnspan=2, pady=5, sticky='ew') #.grid returns none so must separate if editing
         Save_Folder_Button = tk.Button(self, text='Click', command=self.browseFiles).grid(row=3,column=4, padx=5, pady=5, ipadx=5)
-
+        
     # Function for opening the
     # file explorer window
     def browseFiles(self, event=None):

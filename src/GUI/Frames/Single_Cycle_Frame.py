@@ -27,7 +27,6 @@ class SingleCycle(tk.Frame):
 
     def stopButton(self):
         self.OnStopSingleCycle()
-        #print('stop')
         #stop cycle
 
     #Event Handling

@@ -29,7 +29,7 @@ class Machine:
     # Class Variables - constants
     
     # command list
-    grbl_commands = File(os.path.join(os.getcwd(), 'src/Setting_Files/grbl_commands_1.txt'))
+    grbl_commands = File(os.path.join(os.getcwd(), 'src/Setting_Files/grbl_commands.txt'))
     start_of_night = 22
     end_of_night = 7
 
