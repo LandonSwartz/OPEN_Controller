@@ -58,6 +58,7 @@ class Machine:
         self.timelapse_start_of_night = datetime.strptime("21", "%H")
         self.timelapse_end_of_night = datetime.strptime("7", "%H")
         self.stop_run_continuously = None
+        self.timelapse_running = False
         
         #setting night schedules
         self.SetTimelapseStartOfNight(self.timelapse_start_of_night.strftime('%H'))
@@ -74,7 +75,7 @@ class Machine:
         #make folders in save folder path
         if path:    # if real path
             for position in commands:
-                folder_name = "Position_" + str(commands.index(position)) #this should return the number, may need to add 1 as well
+                folder_name = "Position_" + str(commands.index(position) + 1) #this should return the number, may need to add 1 as well
                 folder_path = os.path.join(self.saveFolderPath, folder_name)
                 try:
                     if not os.path.isdir(folder_path): # if folder not made then make it

@@ -1,21 +1,8 @@
 #Class wrapper for UART Serial Communication
 
-'''
-TODO:
-- Need to check sending
-- logging
-- etc
-'''
-
 import serial
-import threading
-from queue import Queue
-import subprocess
-import socket
-
 # may do events for when recieving data causing data to be sent
 import codecs
-
 import logging
 
 log = logging.getLogger('open_controller_log.log')
@@ -47,8 +34,6 @@ class UART_Serial:
         if(self.ser.in_waiting > 0):
             line = self.ser.readline()
             log.debug('Read {} from serial port {}'.format(line, self.port))
-        #data.append(codecs.decode(line))
-        #print(line)
             return self.ConvertToString(line)
         else:
             return None
@@ -57,10 +42,10 @@ class UART_Serial:
     def Write_Data(self, data):
         try:
             data_encode = self.ConvertToBytes(data)
-            log.debug('Wrote {} to serial port {}'.format(data_encode, self.port))
+            #log.debug('Wrote {} to serial port {}'.format(data_encode, self.port))
             self.ser.write(data_encode)
         except SerialTimeException as e:
-            log.error("write timeout error in uart_serial: {}".format(e))
+            log.error("write timeout error in uart_serial")
         except:
             log.error("General error in Write_Data of UART_Serial_Class")
 
@@ -106,4 +91,4 @@ class UART_Serial:
     def __del__(self):
         # closing port
         self.Close_Port()
-        #log.info('Serial Port {} closed'.format(self.port))
+        log.info('Serial Port {} closed'.format(self.port))

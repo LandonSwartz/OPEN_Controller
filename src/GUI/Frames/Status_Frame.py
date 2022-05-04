@@ -53,7 +53,7 @@ class StatusFrame(tk.Frame):
     # file explorer window
     def browseFiles(self, event=None):
         # creating path to save folder
-        filename = filedialog.askdirectory(initialdir="/home/", title="Select a File")
+        filename = filedialog.askdirectory(initialdir="/home/", title="Select A Folder Location")
         if filename:
             filepath: str = os.path.abspath(filename)
             log.debug('Save Folder path is {}'.format(filepath))
@@ -66,7 +66,7 @@ class StatusFrame(tk.Frame):
         self.OnSaveFolderPathChange(filepath)
 
     #Check status of GRBL Connection on event of GRBL connected in machine
-    def ChangeGRBLStatusOn(self):
+    '''def ChangeGRBLStatusOn(self):
         green_light = ImageTk.PhotoImage(Image.open('GUI/assets/green_light.png'))
         self.GRBL_status_graphic.configure(image=green_light)
         self.GRBL_status_graphic.image = green_light
@@ -105,7 +105,7 @@ class StatusFrame(tk.Frame):
         #red_light = ImageTk.PhotoImage(Image.open('src/GUI/assets/red_light.png'))
         #self.Camera_setting_graphic.configure(image=red_light)
         #self.Camera_setting_graphic.image=red_light
-        log.debug('Camera Settings graphic changed to red light')
+        log.debug('Camera Settings graphic changed to red light')'''
 
     def AddSubscriberSaveFolderPathChanged(self, objMethod):
         self.OnSaveFolderPathChange += objMethod

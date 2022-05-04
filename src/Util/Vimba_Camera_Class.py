@@ -77,3 +77,4 @@ class Vimba_Camera(object):
 
     def __del__(self):
         log.debug('Vimba Camera class deleted')
+        

@@ -32,12 +32,12 @@ class MainApplication(tk.Frame):
         self.single_cycle.AddSubscribersForOnStopSingleCycleEvent(self.machine.StopCycle)
 
         #status events
-        self.machine.AddSubscribersForOnConnectedGRBLEvent(self.status_frame.ChangeGRBLStatusOn)
+        '''self.machine.AddSubscribersForOnConnectedGRBLEvent(self.status_frame.ChangeGRBLStatusOn)
         self.machine.AddSubscrubersForOffConnectedGRBLEvent(self.status_frame.ChangeGRBLStatusOff)
         self.machine.AddSubscribersForOnLightConnectedEvent(self.status_frame.ChangeLightsStatusOn)
         self.machine.AddSubscriberForOffLightConnectedEvent(self.status_frame.ChangeLightsStatusOff)
         self.machine.AddSubscribersForOnLoadCameraSettingsEvent(self.status_frame.ChangeCameraSettingsOn)
-        self.machine.AddSubscriberForOffLoadCameraSettingsEvent(self.status_frame.ChangeCameraSettingsOff())
+        self.machine.AddSubscriberForOffLoadCameraSettingsEvent(self.status_frame.ChangeCameraSettingsOff())'''
         self.status_frame.AddSubscriberSaveFolderPathChanged(self.machine.SetSaveFolderPath)
 
         #manual frame events, will fill out in future when finish with machine
