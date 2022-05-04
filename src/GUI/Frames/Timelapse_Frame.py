@@ -145,7 +145,7 @@ class TimelapseFrame(tk.Frame):
     def Stop_Button(self):
         #stopping timelapse
         log.info("Stopping Cycle...")
-        self.OnStopButtonPressed
+        self.OnStopButtonPressed()
 
     #Event Subscribing Functions
     def AddSubscriberOnIntervalChanged(self, objMethod):

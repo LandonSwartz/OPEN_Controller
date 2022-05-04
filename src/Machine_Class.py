@@ -236,25 +236,12 @@ class Machine:
         
             current_date = datetime.now()
 
-            schedule.every(self.timelapse_interval).minutes.until(self.timelapse_end_date).do(self.run_threaded, self.SingleCycle) #can change and set schedule with this using GUI!
+            schedule.every(self.timelapse_interval).hours.until(self.timelapse_end_date).do(self.run_threaded, self.SingleCycle) #can change and set schedule with this using GUI!
             schedule.every().day.at(self.timelapse_start_of_night.strftime('%H:%M')).do(self.run_threaded, self.GrowLights_Off)
             schedule.every().day.at(self.timelapse_end_of_night.strftime('%H:%M')).do(self.run_threaded, self.GrowLights_On)
             
             self.stop_run_continously = self.run_continuously()
             logger.info("All jobs on schedule is {}".format(schedule.get_jobs()))
-
-    '''def TimelapseThread(self):
-        
-        #starting cycle
-        self.SingleCycle()
-        
-        current_date = datetime.now()
-
-        schedule.every(self.timelapse_interval).hours.until(self.timelapse_end_date).do(self.SingleCycle) #can change and set schedule with this using GUI!
-
-        #self.stop_run_continously = self.run_continuously(self.timelapse_interval*60*60)
-        self.stop_run_continously = self.run_continuously()
-        log.info("All jobs on schedule is {}".format(schedule.get_jobs()))'''
             
     # example from schedule library website
     # link: https://schedule.readthedocs.io/en/stable/background-execution.html
@@ -291,9 +278,8 @@ class Machine:
     #Stops Timelapse
     def StopTimelapse(self):
         logging.info('Stopping timelapse')
-        self.stop_run_continuously.set() #stopping continous run thread
+        self.stop_run_continously.set() #stopping continous run thread
         self.timelapse_running = False
-        #self.timelapse_running = False
     
     def BackLights_On(self):
         logging.debug('Turning backlights on from machine class')
@@ -332,11 +318,9 @@ class Machine:
 
     def __del__(self):
         # stopping schedule jobs
-        #self.stop_run_continously_start_night.set()
-        #self.stop_run_continously_end_night.set()
-        if self.stop_run_continuously is not None: #if set
+        if self.timelapse_running is True: #if set
             logger.debug("stopping timelapse with setting")
-            self.stop_run_continuously.set() #stopping continous run thread
+            self.stop_run_continously.set() #stopping continous run thread
         
         #deleting other objects
         self.grbl_ar.__del__()
