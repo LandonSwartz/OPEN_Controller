@@ -236,7 +236,7 @@ class Machine:
         
             current_date = datetime.now()
 
-            schedule.every(self.timelapse_interval).hours.until(self.timelapse_end_date).do(self.run_threaded, self.SingleCycleThread) #can change and set schedule with this using GUI!
+            schedule.every(self.timelapse_interval).minutes.until(self.timelapse_end_date).do(self.run_threaded, self.SingleCycle) #can change and set schedule with this using GUI!
             schedule.every().day.at(self.timelapse_start_of_night.strftime('%H:%M')).do(self.run_threaded, self.GrowLights_Off)
             schedule.every().day.at(self.timelapse_end_of_night.strftime('%H:%M')).do(self.run_threaded, self.GrowLights_On)
             
@@ -284,7 +284,7 @@ class Machine:
     
     #from scheduler documentation of parallel execution
     # https://schedule.readthedocs.io/en/stable/parallel-execution.html
-    def run_threaded(job_func):
+    def run_threaded(self, job_func):
         job_thread = threading.Thread(target=job_func)
         job_thread.start()
 
