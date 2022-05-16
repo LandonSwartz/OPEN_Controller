@@ -158,7 +158,7 @@ class Machine:
     def Filepath_Set(self, position_number):
         current_time = datetime.now().strftime('%d-%m-%Y_%H-%M-%S')
         filename = current_time + '_' + str(position_number) + '.png'
-        folder_name = "Position_" + str(position_number)
+        folder_name = "Position_" + str(position_number + 1)
         folder_path = os.path.join(self.saveFolderPath, folder_name)
         filepath = os.path.join(folder_path, filename)
         return filepath
@@ -173,16 +173,17 @@ class Machine:
                            self.timelapse_end_date.time()):
             logger.debug('It is nighttime')
         else: # it is not nighttime
-            cycle_thread = threading.Thread(target=self.SingleCycleThread)
-            try:
+            #cycle_thread = threading.Thread(target=self.SingleCycleThread)
+            self.run_threaded(self.SingleCycleThread)
+            '''try:
                 if self.cycle_running is True:
                     cycle_thread.start()
                     cycle_thread.join() #wait until done, may not need
                     self.cycle_running = False
             except:
                 logger.debug("Single cycle thread failed")
-                cycle_thread = None
-
+                cycle_thread = None'''
+            
     # Thread for single cycle
     def SingleCycleThread(self):
         logger.debug('single cycle thread is running')
@@ -209,7 +210,12 @@ class Machine:
                     self.camera.CaptureImage(filepath)
                     sleep(1)
             else:
+                #self.grbl_ar.Home_Command()
                 pass
+        
+        #if cancelled during cycle, send home command
+        if self.cycle_running is False:
+                self.grbl_ar.Home_Command()
             
         self.lights_ar.GrowlightsOn()
         self.lights_ar.BackLightsOff()
