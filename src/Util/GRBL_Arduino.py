@@ -1,9 +1,4 @@
 # GRBL Subclass of Arduino class
-
-#from src.Util.Arduino_Class import Arduino
-#from src.Util.File_Class import File
-
-#from Util.Arduino_Class import Arduino
 import logging
 
 from Util.Arduino_Class import Arduino
@@ -45,3 +40,9 @@ class GRBL_Arduino(Arduino):
 
     def HomeCommand(self): 
         self.SendCommand('$H\n')
+        
+    def SleepCommand(self):
+        self.Send_Serial('$SLP\n')
+        
+    def GRBLSoftReset(self):      
+        self.Send_Serial(chr(0x18)) # ctrl-x in ascii

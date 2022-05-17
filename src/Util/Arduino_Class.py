@@ -24,9 +24,12 @@ class Arduino:
 
     #Send Data Over Serial Port
     def Send_Serial(self, msg):
-        log.debug('Sending {} through arduino serial'.format(msg.strip('\n')))
+        if '\n' in msg:
+            log.debug('Sending {} through arduino serial'.format(msg.strip('\n')))
+        else:
+            log.debug('Sending {} through arduino serial'.format(msg.encode('utf-8').hex()))
+            
         self.ser_port.Write_Data(msg)
-        #self.ser.Send(msg)
 
     #Read Serial Response
     def Read_Serial(self):

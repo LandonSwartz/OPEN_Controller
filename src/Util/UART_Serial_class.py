@@ -48,6 +48,9 @@ class UART_Serial:
             log.error("write timeout error in uart_serial")
         except:
             log.error("General error in Write_Data of UART_Serial_Class")
+            
+    def Write_Bytes(self, data):
+        self.ser.write(data)
 
     # Converting string to bytes to send over socket
     def ConvertToBytes(self, string):
@@ -58,7 +61,6 @@ class UART_Serial:
         return str(inc_bytes, 'UTF-8').strip('\r\n')
         
     def IsDataInSerial(self):
-        #print(self.ser.in_waiting)
         return (self.ser.in_waiting > 0)
 
     """Get Baudrate of current open port"""
