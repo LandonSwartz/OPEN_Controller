@@ -75,6 +75,6 @@ class Vimba_Camera(object):
         except:
             log.info("failure to save {} at this time".format(filename))
 
-    def __del__(self):
-        log.debug('Vimba Camera class deleted')
+    #def __del__(self):
+        #log.debug('Vimba Camera class deleted')
         

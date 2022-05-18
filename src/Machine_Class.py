@@ -352,5 +352,5 @@ class Machine:
         #deleting other objects
         self.grbl_ar.__del__()
         self.lights_ar.__del__()
-        self.camera.__del__() #may not need to delete
+        #self.camera.__del__() #may not need to delete
 

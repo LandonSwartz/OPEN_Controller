@@ -82,7 +82,7 @@ class UART_Serial:
 
     'Closes Port when called'
     def Close_Port(self):
-        log.info('Port {} is closed'.format(self.ser.name))
+        #log.info('Port {} is closed'.format(self.ser.name))
         self.ser.close()
 
     'Returns name of port when called'
@@ -93,4 +93,4 @@ class UART_Serial:
     def __del__(self):
         # closing port
         self.Close_Port()
-        log.info('Serial Port {} closed'.format(self.port))
+        #log.info('Serial Port {} closed'.format(self.port))
