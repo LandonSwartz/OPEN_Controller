@@ -17,12 +17,6 @@ import threading #for threading things
 
 logger = logging.getLogger('open_controller_log.log')
 
-'''#own thread for single cycle
-class SingleCycleThread(Thread):
-    def __init__(self, grbl_ar, lights_ar, ):
-        super().__init__(self)
-        
-        self.'''
 
 class Machine:
 
@@ -213,9 +207,10 @@ class Machine:
                 #self.grbl_ar.Home_Command()
                 pass
         
-        #if cancelled during cycle, send home command
+        #if cancelled during cycle, send reset and home command
         if self.cycle_running is False:
-                self.grbl_ar.Home_Command()
+                self.grbl_ar.GRBLSoftReset() # reset GRBL
+                self.grbl_ar.HomeCommand()
             
         self.lights_ar.GrowlightsOn()
         self.lights_ar.BackLightsOff()
