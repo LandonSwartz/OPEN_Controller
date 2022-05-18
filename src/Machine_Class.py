@@ -142,7 +142,10 @@ class Machine:
         commands = self.grbl_commands.ReturnFileAsList()
         logger.info('Moving to position {}'.format(posNum))
         # sending command
-        self.grbl_ar.Send_Serial(commands[int(posNum)])
+        if posNum == '$H':
+            self.grbl_ar.HomeCommand()
+        else: # regular position
+            self.grbl_ar.Send_Serial(commands[int(posNum)])
 
     def CaptureImage(self, filepath):
         logger.info('Capturing image on vimba camera')

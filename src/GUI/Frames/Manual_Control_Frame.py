@@ -9,7 +9,7 @@ log = logging.getLogger('open_controller_log.log')
 
 class ManualControlFrame(tk.Frame):
 
-    numPos = ('1', '2', '3', '4', '5', '6', '7')
+    numPos = ('$H', '1', '2', '3', '4', '5', '6', '7')
 
     OnPositionNumChanged = Event_Obj()
     OnMoveToEvent = Event_Obj()
@@ -70,7 +70,7 @@ class ManualControlFrame(tk.Frame):
 
     # set current position in grbl class
     def PositionNum_combo_changed(self, event):
-        log.info('Position num combo box changed')
+        log.debug('Position num combo box changed')
         #self.OnPositionNumChanged(self.PositionNumber_combobox.get())
 
     # move machine to position
@@ -81,7 +81,6 @@ class ManualControlFrame(tk.Frame):
     # manually capture image
     def ManualImageCaputre(self):
         self.OnCaptureImageEvent('manual_image.png')
-        print('Manual Image button clicked')
         log.info('Manual Image Button clicked')
 
     #turns on backlight on manually
