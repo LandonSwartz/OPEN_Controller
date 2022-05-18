@@ -150,11 +150,33 @@ class Machine:
     def CaptureImage(self, filepath):
         logger.info('Capturing image on vimba camera')
         self.camera.CaptureImage(filepath)
+        
+    '''Manually capture images from GUI based on position of machine'''
+    def CaptureImageManual(self, posNum_str):
+        if posNum_str == '$H':
+            log.error('Trying to capture image on homing command in manual section')
+            pass
+        else:
+            #trying lights on for image capture
+            self.lights_ar.GrowlightsOff()
+            self.lights_ar.BackLightsOn()
+            sleep(0.5)
+            
+            #setting filepath for manual image
+            posNum_int = int(posNum_str)
+            posNum_int = posNum_int - 1
+            logger.info('Capturing image manually from tkinter on vimba camera')
+            filepath = self.Filepath_Set(posNum_int) #minus one becuase filepath_set adds one during execution
+            self.camera.CaptureImage(filepath)
+            
+            #resetting lights to normal states
+            sleep(0.5)
+            self.lights_ar.GrowlightsOn()
+            self.lights_ar.BackLightsOff()
 
-    # TODO make sure this works
     def Filepath_Set(self, position_number):
         current_time = datetime.now().strftime('%d-%m-%Y_%H-%M-%S')
-        filename = current_time + '_' + str(position_number) + '.png'
+        filename = current_time + '_' + str(position_number + 1) + '.png'
         folder_name = "Position_" + str(position_number + 1)
         folder_path = os.path.join(self.saveFolderPath, folder_name)
         filepath = os.path.join(folder_path, filename)

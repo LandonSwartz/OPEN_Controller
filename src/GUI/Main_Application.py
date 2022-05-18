@@ -43,7 +43,7 @@ class MainApplication(tk.Frame):
         #manual frame events, will fill out in future when finish with machine
         #self.manual_control_frame.AddSubscriberForPositionNumChanged(self.machine.SetCurrentPosition)
         self.manual_control_frame.AddSubscriberForMoveToBtnPressed(self.machine.MoveTo)
-        self.manual_control_frame.AddSubscriberForManualImageCaptureBtnPressed(self.machine.CaptureImage)
+        self.manual_control_frame.AddSubscriberForManualImageCaptureBtnPressed(self.machine.CaptureImageManual)
         self.manual_control_frame.AddSubscriberForManualBacklightOnBtnPressed(self.machine.BackLights_On)
         self.manual_control_frame.AddSubscriberForManualBacklightOffBtnPressed(self.machine.BackLights_Off)
         self.manual_control_frame.AddSubscriberForManualGrowlightOnBtnPressed(self.machine.GrowLights_On)

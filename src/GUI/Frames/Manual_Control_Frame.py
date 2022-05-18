@@ -80,7 +80,7 @@ class ManualControlFrame(tk.Frame):
 
     # manually capture image
     def ManualImageCaputre(self):
-        self.OnCaptureImageEvent('manual_image.png')
+        self.OnCaptureImageEvent(self.PositionNumber_combobox.get())
         log.info('Manual Image Button clicked')
 
     #turns on backlight on manually
