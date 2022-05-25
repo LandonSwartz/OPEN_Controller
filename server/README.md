@@ -1,3 +1,5 @@
+## API Server Component
+
 Within the `server` directory run the below commands:
 
 `python3 -m venv venv`
@@ -7,3 +9,5 @@ Within the `server` directory run the below commands:
 `pip install -r requirements.txt`
 
 `python app.py`
+
+The flask server should then be up & running.
