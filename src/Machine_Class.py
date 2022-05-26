@@ -175,8 +175,8 @@ class Machine:
             self.lights_ar.BackLightsOff()
 
     def Filepath_Set(self, position_number):
-        current_time = datetime.now().strftime('%d-%m-%Y_%H-%M-%S')
-        filename = current_time + '_' + str(position_number + 1) + '.png'
+        current_time = datetime.now().strftime('%d-%m-%Y--%H-%M-%S')
+        filename = current_time + '_P' + str(position_number + 1) + '.png'
         folder_name = "Position_" + str(position_number + 1)
         folder_path = os.path.join(self.saveFolderPath, folder_name)
         filepath = os.path.join(folder_path, filename)
@@ -189,8 +189,8 @@ class Machine:
         # check if night time and pass if it is
         if self.in_between(datetime.now().time(),
                            self.timelapse_start_of_night.time(),
-                           self.timelapse_end_date.time()):
-            logger.debug('It is nighttime')
+                           self.timelapse_end_of_night.time()):
+            logger.debug('It is nighttime, not running cycle')
         else: # it is not nighttime
             #cycle_thread = threading.Thread(target=self.SingleCycleThread)
             self.run_threaded(self.SingleCycleThread)
@@ -242,6 +242,9 @@ class Machine:
 
     # Sees if time is between two ppints, useful for determining nighttime
     def in_between(self, now, start, end):
+        #logger.debug("start is {}".format(start))
+        #logger.debug("end is {}".format(end))
+        #logger.debug("now is {}".format(now))
         if start <= end:
             return start <= now < end
         else:  # over midnight e.g., 23:30-04:15
