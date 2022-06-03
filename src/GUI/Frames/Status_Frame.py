@@ -75,6 +75,7 @@ class StatusFrame(tk.Frame):
         self.OnSaveFolderPathChange(filepath)
         
     def PosUpDownChanged(self):
+        log.debug('Pos Up Down ticker is {}'.format(self.Pos_UpDown_Spin.get()))
         self.OnPositionTickerChange(self.Pos_UpDown_Spin.get())
         log.debug('Pos Up Down ticker is {}'.format(self.Pos_UpDown_Spin.get()))
 
@@ -123,5 +124,5 @@ class StatusFrame(tk.Frame):
     def AddSubscriberSaveFolderPathChanged(self, objMethod):
         self.OnSaveFolderPathChange += objMethod
         
-    def AddSubscriberPositionTickerChange(self, objMethod):
+    def AddSubscriberPositionTickerChanged(self, objMethod):
         self.OnPositionTickerChange += objMethod

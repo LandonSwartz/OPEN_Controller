@@ -39,6 +39,7 @@ class MainApplication(tk.Frame):
         self.machine.AddSubscribersForOnLoadCameraSettingsEvent(self.status_frame.ChangeCameraSettingsOn)
         self.machine.AddSubscriberForOffLoadCameraSettingsEvent(self.status_frame.ChangeCameraSettingsOff())'''
         self.status_frame.AddSubscriberSaveFolderPathChanged(self.machine.SetSaveFolderPath)
+        self.status_frame.AddSubscriberPositionTickerChanged(self.machine.SetNumOfPos)
 
         #manual frame events, will fill out in future when finish with machine
         #self.manual_control_frame.AddSubscriberForPositionNumChanged(self.machine.SetCurrentPosition)

@@ -53,6 +53,7 @@ class Machine:
         self.timelapse_end_of_night = datetime.strptime("7", "%H")
         self.stop_run_continuously = None
         self.timelapse_running = False
+        int : self.num_of_pos = 7 #default number of positions
         
         #setting night schedules
         self.SetTimelapseStartOfNight(self.timelapse_start_of_night.strftime('%H'))
@@ -62,7 +63,7 @@ class Machine:
         # setting path
         self.saveFolderPath = path
         logger.debug('save folder setting path is {}'.format(self.saveFolderPath))
-        commands = self.grbl_commands.ReturnFileAsList()
+        '''commands = self.grbl_commands.ReturnFileAsList()
         #removing homing signals
         commands = commands[1:-1]
         
@@ -77,9 +78,32 @@ class Machine:
                         logger.debug('Folder made at {}'.format(folder_path))
                 except OSError:
                     logger.error('Fialure to make folder {}'.format(folder_path))
-                    pass # pass if already exist
+                    pass # pass if already exist'''
                 
         return
+    
+    # makes number of position folders as needed
+    def PositionFolders(self):
+        commands = self.grbl_commands.ReturnFileAsList()
+        #removing homing signals
+        #commands = commands[1:-1]
+        commands = commands[1:-(8-int(self.num_of_pos))]
+        #make folders in save folder path
+        if self.saveFolderPath:    # if real path
+            for position in commands:
+                folder_name = "Position_" + str(commands.index(position) + 1) #this should return the number, may need to add 1 as well
+                folder_path = os.path.join(self.saveFolderPath, folder_name)
+                try:
+                    if not os.path.isdir(folder_path): # if folder not made then make it
+                        os.makedirs(folder_path)
+                        logger.debug('Folder made at {}'.format(folder_path))
+                except OSError:
+                    logger.error('Failure to make folder {}'.format(folder_path))
+                    pass # pass if already exist
+                
+    def SetNumOfPos(self, num):
+        self.num_of_pos = num
+        logger.debug('Machine Num of Pos is: {}'.format(self.num_of_pos))
 
     def SetCameraSettingsPath(self, path):
         self.cameraSettingsPath = path
@@ -185,6 +209,9 @@ class Machine:
     # Single Cycle Function, may throw into thread
     def SingleCycle(self):
         self.cycle_running = True
+        
+        # creating folders
+        self.PositionFolders()
 
         # check if night time and pass if it is
         if self.in_between(datetime.now().time(),
@@ -211,7 +238,7 @@ class Machine:
         self.lights_ar.BackLightsOn()
         
         first_command = commands[0] # slicing first command off (ususally homing)
-        commands = commands[1:]
+        commands = commands[1:-(8-int(self.num_of_pos))]
         self.grbl_ar.ser_port.ser.flushInput()        # flush input messages
         sleep(0.1)
         self.grbl_ar.Send_Serial(first_command)
@@ -237,6 +264,7 @@ class Machine:
                 self.grbl_ar.GRBLSoftReset() # reset GRBL
                 self.grbl_ar.HomeCommand()
             
+        self.grbl_ar.HomeCommand()
         self.lights_ar.GrowlightsOn()
         self.lights_ar.BackLightsOff()
 
@@ -259,6 +287,9 @@ class Machine:
     def StartTimelapse(self):
         logging.info('Starting timelapse')
         self.timelapse_running = True
+        
+        # creating folders
+        self.PositionFolders()
 
         if self.timelapse_running is True:
                     #starting cycle
