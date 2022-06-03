@@ -13,6 +13,7 @@ log = logging.getLogger('open_controller_log.log')
 class StatusFrame(tk.Frame):
 
     OnSaveFolderPathChange = Event_Obj()
+    OnPositionTickerChange = Event_Obj()
 
     #init
     def __init__(self, parent, Machine):
@@ -44,12 +45,18 @@ class StatusFrame(tk.Frame):
         #self.Camera_setting_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.Camera_setting_graphic))
 '''
         
-        Save_Folder_Label = tk.Label(self, text='Save Folder Location:').grid(row=3, column=1, padx=5, pady=5)
+        Save_Folder_Label = tk.Label(self, text='Save Folder Location:').grid(row=0, column=0, padx=5, pady=5)
         self.Save_Folder_Textbox = tk.Text(self, height=1, width=20, font=('Arial', 12))
-        self.Save_Folder_Textbox.grid(row=3, column=2, columnspan=2, pady=5, sticky='ew') #.grid returns none so must separate if editing
-        Save_Folder_Button = tk.Button(self, text='Click', command=self.browseFiles).grid(row=3,column=4, padx=5, pady=5, ipadx=5)
+        self.Save_Folder_Textbox.grid(row=0, column=1, columnspan=2, pady=5, sticky='ew') #.grid returns none so must separate if editing
+        Save_Folder_Button = tk.Button(self, text='Click', command=self.browseFiles).grid(row=0,column=3, padx=5, pady=5, ipadx=5)
         
-    # Function for opening the
+        #Updown ticker for choosing num of positions
+        Pos_UpDown_Label = tk.Label(self, text='Number of Positions:').grid(row=1, column=0, padx=5, pady=5)
+        self.Pos_UpDown_Spin = tk.Spinbox(self, from_=1, to=7)
+        self.Pos_UpDown_Spin.grid(row=1, column=1, padx=5, pady=5)
+        
+
+# Function for opening the
     # file explorer window
     def browseFiles(self, event=None):
         # creating path to save folder
