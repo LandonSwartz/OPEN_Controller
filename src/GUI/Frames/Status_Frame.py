@@ -52,7 +52,9 @@ class StatusFrame(tk.Frame):
         
         #Updown ticker for choosing num of positions
         Pos_UpDown_Label = tk.Label(self, text='Number of Positions:').grid(row=1, column=0, padx=5, pady=5)
-        self.Pos_UpDown_Spin = tk.Spinbox(self, from_=1, to=7)
+        my_var = StringVar() #to set default value of ticker as highest position 7
+        my_var.set('7')
+        self.Pos_UpDown_Spin = tk.Spinbox(self, from_=1, to=7, textvariable=my_var, command=self.PosUpDownChanged)
         self.Pos_UpDown_Spin.grid(row=1, column=1, padx=5, pady=5)
         
 
@@ -71,6 +73,10 @@ class StatusFrame(tk.Frame):
         self.Save_Folder_Textbox.insert('1.0', str(filepath)) #refill textbox
 
         self.OnSaveFolderPathChange(filepath)
+        
+    def PosUpDownChanged(self):
+        self.OnPositionTickerChange(self.Pos_UpDown_Spin.get())
+        log.debug('Pos Up Down ticker is {}'.format(self.Pos_UpDown_Spin.get()))
 
     #Check status of GRBL Connection on event of GRBL connected in machine
     '''def ChangeGRBLStatusOn(self):
@@ -116,3 +122,6 @@ class StatusFrame(tk.Frame):
 
     def AddSubscriberSaveFolderPathChanged(self, objMethod):
         self.OnSaveFolderPathChange += objMethod
+        
+    def AddSubscriberPositionTickerChange(self, objMethod):
+        self.OnPositionTickerChange += objMethod
