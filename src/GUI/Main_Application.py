@@ -32,18 +32,19 @@ class MainApplication(tk.Frame):
         self.single_cycle.AddSubscribersForOnStopSingleCycleEvent(self.machine.StopCycle)
 
         #status events
-        self.machine.AddSubscribersForOnConnectedGRBLEvent(self.status_frame.ChangeGRBLStatusOn)
+        '''self.machine.AddSubscribersForOnConnectedGRBLEvent(self.status_frame.ChangeGRBLStatusOn)
         self.machine.AddSubscrubersForOffConnectedGRBLEvent(self.status_frame.ChangeGRBLStatusOff)
         self.machine.AddSubscribersForOnLightConnectedEvent(self.status_frame.ChangeLightsStatusOn)
         self.machine.AddSubscriberForOffLightConnectedEvent(self.status_frame.ChangeLightsStatusOff)
         self.machine.AddSubscribersForOnLoadCameraSettingsEvent(self.status_frame.ChangeCameraSettingsOn)
-        self.machine.AddSubscriberForOffLoadCameraSettingsEvent(self.status_frame.ChangeCameraSettingsOff())
+        self.machine.AddSubscriberForOffLoadCameraSettingsEvent(self.status_frame.ChangeCameraSettingsOff())'''
         self.status_frame.AddSubscriberSaveFolderPathChanged(self.machine.SetSaveFolderPath)
+        self.status_frame.AddSubscriberPositionTickerChanged(self.machine.SetNumOfPos)
 
         #manual frame events, will fill out in future when finish with machine
         #self.manual_control_frame.AddSubscriberForPositionNumChanged(self.machine.SetCurrentPosition)
         self.manual_control_frame.AddSubscriberForMoveToBtnPressed(self.machine.MoveTo)
-        self.manual_control_frame.AddSubscriberForManualImageCaptureBtnPressed(self.machine.CaptureImage)
+        self.manual_control_frame.AddSubscriberForManualImageCaptureBtnPressed(self.machine.CaptureImageManual)
         self.manual_control_frame.AddSubscriberForManualBacklightOnBtnPressed(self.machine.BackLights_On)
         self.manual_control_frame.AddSubscriberForManualBacklightOffBtnPressed(self.machine.BackLights_Off)
         self.manual_control_frame.AddSubscriberForManualGrowlightOnBtnPressed(self.machine.GrowLights_On)

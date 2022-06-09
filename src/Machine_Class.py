@@ -17,12 +17,6 @@ import threading #for threading things
 
 logger = logging.getLogger('open_controller_log.log')
 
-'''#own thread for single cycle
-class SingleCycleThread(Thread):
-    def __init__(self, grbl_ar, lights_ar, ):
-        super().__init__(self)
-        
-        self.'''
 
 class Machine:
 
@@ -58,6 +52,8 @@ class Machine:
         self.timelapse_start_of_night = datetime.strptime("21", "%H")
         self.timelapse_end_of_night = datetime.strptime("7", "%H")
         self.stop_run_continuously = None
+        self.timelapse_running = False
+        int : self.num_of_pos = 7 #default number of positions
         
         #setting night schedules
         self.SetTimelapseStartOfNight(self.timelapse_start_of_night.strftime('%H'))
@@ -67,14 +63,14 @@ class Machine:
         # setting path
         self.saveFolderPath = path
         logger.debug('save folder setting path is {}'.format(self.saveFolderPath))
-        commands = self.grbl_commands.ReturnFileAsList()
+        '''commands = self.grbl_commands.ReturnFileAsList()
         #removing homing signals
         commands = commands[1:-1]
         
         #make folders in save folder path
         if path:    # if real path
             for position in commands:
-                folder_name = "Position_" + str(commands.index(position)) #this should return the number, may need to add 1 as well
+                folder_name = "Position_" + str(commands.index(position) + 1) #this should return the number, may need to add 1 as well
                 folder_path = os.path.join(self.saveFolderPath, folder_name)
                 try:
                     if not os.path.isdir(folder_path): # if folder not made then make it
@@ -82,9 +78,32 @@ class Machine:
                         logger.debug('Folder made at {}'.format(folder_path))
                 except OSError:
                     logger.error('Fialure to make folder {}'.format(folder_path))
-                    pass # pass if already exist
+                    pass # pass if already exist'''
                 
         return
+    
+    # makes number of position folders as needed
+    def PositionFolders(self):
+        commands = self.grbl_commands.ReturnFileAsList()
+        #removing homing signals
+        #commands = commands[1:-1]
+        commands = commands[1:-(8-int(self.num_of_pos))]
+        #make folders in save folder path
+        if self.saveFolderPath:    # if real path
+            for position in commands:
+                folder_name = "Position_" + str(commands.index(position) + 1) #this should return the number, may need to add 1 as well
+                folder_path = os.path.join(self.saveFolderPath, folder_name)
+                try:
+                    if not os.path.isdir(folder_path): # if folder not made then make it
+                        os.makedirs(folder_path)
+                        logger.debug('Folder made at {}'.format(folder_path))
+                except OSError:
+                    logger.error('Failure to make folder {}'.format(folder_path))
+                    pass # pass if already exist
+                
+    def SetNumOfPos(self, num):
+        self.num_of_pos = num
+        logger.debug('Machine Num of Pos is: {}'.format(self.num_of_pos))
 
     def SetCameraSettingsPath(self, path):
         self.cameraSettingsPath = path
@@ -108,15 +127,19 @@ class Machine:
         self.timelapse_start_of_night = start_of_night_dt
         
         # schedule it to turn off growlights
-        if self.start_of_night_schedule_flag == 0:
+        '''if self.start_of_night_schedule_flag == 0:
             schedule.every().day.at(start_of_night_dt.strftime('%H:%M')).do(self.GrowLights_Off)
-            self.stop_run_continously_start_night = self.run_continuously()
+            #self.stop_run_continously_start_night = self.run_continuously()
             self.start_of_night_schedule_flag = 1
         else: # stop current run and start new one with new parameters
-            self.stop_run_continously_start_night.set()
+            #self.stop_run_continously_start_night.set()
             schedule.every().day.at(start_of_night_dt.strftime('%H:%M')).do(self.GrowLights_Off)
-            self.stop_run_continously_start_night = self.run_continuously()
-            self.start_of_night_schedule_flag = 1 # redundant but just in case
+            #self.stop_run_continously_start_night = self.run_continuously()
+            self.start_of_night_schedule_flag = 1 # redundant but just in case'''
+            
+    def TimelapseStartOfNightThread(self):
+        job_thread = threading.Thread(target=self.GrowLights_Off())
+        job_thread.start()
         
     def SetTimelapseEndOfNight(self, end_of_night):
         #end of night schedule flag for if schedule set yet
@@ -128,32 +151,57 @@ class Machine:
         self.timelapse_end_of_night = end_of_night_dt
                       
         # schedule it to turn on growlights
-        if self.end_of_night_schedule_flag == 0:
-            schedule.every().day.at(end_of_night_dt.strftime('%H:%M')).do(self.GrowLights_Off)
-            self.stop_run_continously_end_night = self.run_continuously()
+        '''if self.end_of_night_schedule_flag == 0:
+            schedule.every().day.at(end_of_night_dt.strftime('%H:%M')).do(self.GrowLights_On)
+            #self.stop_run_continously_end_night = self.run_continuously(interval=1)
             self.end_of_night_schedule_flag = 1
         else: # stop current run and start new one with new parameters
-            self.stop_run_continously_end_night.set()
-            schedule.every().day.at(end_of_night_dt.strftime('%H:%M')).do(self.GrowLights_Off)
-            self.stop_run_continously_end_night = self.run_continuously()
-            self.end_of_night_schedule_flag = 1 # redundant but just in case
+            #self.stop_run_continously_end_night.set()
+            schedule.every().day.at(end_of_night_dt.strftime('%H:%M')).do(self.GrowLights_On)
+            #self.stop_run_continously_end_night = self.run_continuously(interval=1)
+            self.end_of_night_schedule_flag = 1 # redundant but just in case'''
 
     # Function that moves to specific location
     def MoveTo(self, posNum):
         commands = self.grbl_commands.ReturnFileAsList()
         logger.info('Moving to position {}'.format(posNum))
         # sending command
-        self.grbl_ar.Send_Serial(commands[int(posNum)])
+        if posNum == '$H':
+            self.grbl_ar.HomeCommand()
+        else: # regular position
+            self.grbl_ar.Send_Serial(commands[int(posNum)])
 
     def CaptureImage(self, filepath):
         logger.info('Capturing image on vimba camera')
         self.camera.CaptureImage(filepath)
+        
+    '''Manually capture images from GUI based on position of machine'''
+    def CaptureImageManual(self, posNum_str):
+        if posNum_str == '$H':
+            log.error('Trying to capture image on homing command in manual section')
+            pass
+        else:
+            #trying lights on for image capture
+            self.lights_ar.GrowlightsOff()
+            self.lights_ar.BackLightsOn()
+            sleep(0.5)
+            
+            #setting filepath for manual image
+            posNum_int = int(posNum_str)
+            posNum_int = posNum_int - 1
+            logger.info('Capturing image manually from tkinter on vimba camera')
+            filepath = self.Filepath_Set(posNum_int) #minus one becuase filepath_set adds one during execution
+            self.camera.CaptureImage(filepath)
+            
+            #resetting lights to normal states
+            sleep(0.5)
+            self.lights_ar.GrowlightsOn()
+            self.lights_ar.BackLightsOff()
 
-    # TODO make sure this works
     def Filepath_Set(self, position_number):
-        current_time = datetime.now().strftime('%d-%m-%Y_%H-%M-%S')
-        filename = current_time + '_' + str(position_number) + '.png'
-        folder_name = "Position_" + str(position_number)
+        current_time = datetime.now().strftime('%d-%m-%Y--%H-%M-%S')
+        filename = current_time + '_P' + str(position_number + 1) + '.png'
+        folder_name = "Position_" + str(position_number + 1)
         folder_path = os.path.join(self.saveFolderPath, folder_name)
         filepath = os.path.join(folder_path, filename)
         return filepath
@@ -161,23 +209,27 @@ class Machine:
     # Single Cycle Function, may throw into thread
     def SingleCycle(self):
         self.cycle_running = True
+        
+        # creating folders
+        self.PositionFolders()
 
         # check if night time and pass if it is
         if self.in_between(datetime.now().time(),
                            self.timelapse_start_of_night.time(),
-                           self.timelapse_end_date.time()):
-            logger.debug('It is nighttime')
+                           self.timelapse_end_of_night.time()):
+            logger.debug('It is nighttime, not running cycle')
         else: # it is not nighttime
-            try:
+            #cycle_thread = threading.Thread(target=self.SingleCycleThread)
+            self.run_threaded(self.SingleCycleThread)
+            '''try:
                 if self.cycle_running is True:
-                    cycle_thread = threading.Thread(target=self.SingleCycleThread)
                     cycle_thread.start()
                     cycle_thread.join() #wait until done, may not need
-                    #cycle_thread = None
                     self.cycle_running = False
             except:
-                log.debug("Single cycle thread failed")
-
+                logger.debug("Single cycle thread failed")
+                cycle_thread = None'''
+            
     # Thread for single cycle
     def SingleCycleThread(self):
         logger.debug('single cycle thread is running')
@@ -186,7 +238,9 @@ class Machine:
         self.lights_ar.BackLightsOn()
         
         first_command = commands[0] # slicing first command off (ususally homing)
-        commands = commands[1:]
+        commands = commands[1:-(8-int(self.num_of_pos))]
+        self.grbl_ar.ser_port.ser.flushInput()        # flush input messages
+        sleep(0.1)
         self.grbl_ar.Send_Serial(first_command)
         sleep(3)
 
@@ -197,18 +251,28 @@ class Machine:
                 self.grbl_ar.Send_Serial(position)
                 if not 'H' in position: #if not homing command
                     #wait until at position
-                    sleep(3)
+                    sleep(5)
                     filepath = self.Filepath_Set(commands.index(position)) #check that this creates right things #TODO MAKE SURE WORK
                     self.camera.CaptureImage(filepath)
                     sleep(1)
             else:
+                #self.grbl_ar.Home_Command()
                 pass
+        
+        #if cancelled during cycle, send reset and home command
+        if self.cycle_running is False:
+                self.grbl_ar.GRBLSoftReset() # reset GRBL
+                self.grbl_ar.HomeCommand()
             
+        self.grbl_ar.HomeCommand()
         self.lights_ar.GrowlightsOn()
         self.lights_ar.BackLightsOff()
 
     # Sees if time is between two ppints, useful for determining nighttime
     def in_between(self, now, start, end):
+        #logger.debug("start is {}".format(start))
+        #logger.debug("end is {}".format(end))
+        #logger.debug("now is {}".format(now))
         if start <= end:
             return start <= now < end
         else:  # over midnight e.g., 23:30-04:15
@@ -223,6 +287,9 @@ class Machine:
     def StartTimelapse(self):
         logging.info('Starting timelapse')
         self.timelapse_running = True
+        
+        # creating folders
+        self.PositionFolders()
 
         if self.timelapse_running is True:
                     #starting cycle
@@ -230,26 +297,16 @@ class Machine:
         
             current_date = datetime.now()
 
-            schedule.every(self.timelapse_interval).hours.until(self.timelapse_end_date).do(self.SingleCycle) #can change and set schedule with this using GUI!
-
+            schedule.every(self.timelapse_interval).hours.until(self.timelapse_end_date).do(self.run_threaded, self.SingleCycle) #can change and set schedule with this using GUI!
+            schedule.every().day.at(self.timelapse_start_of_night.strftime('%H:%M')).do(self.run_threaded, self.GrowLights_Off)
+            schedule.every().day.at(self.timelapse_end_of_night.strftime('%H:%M')).do(self.run_threaded, self.GrowLights_On)
+            
             self.stop_run_continously = self.run_continuously()
-
-        self.timelapse_running = False
-
-    def TimelapseThread(self):
-        
-        #starting cycle
-        self.SingleCycle()
-        
-        current_date = datetime.now()
-
-        schedule.every(self.timelapse_interval).minutes.until(self.timelapse_end_date).do(self.SingleCycle) #can change and set schedule with this using GUI!
-
-        self.stop_run_continously = self.run_continuously()
+            logger.info("All jobs on schedule is {}".format(schedule.get_jobs()))
             
     # example from schedule library website
     # link: https://schedule.readthedocs.io/en/stable/background-execution.html
-    def run_continuously(self, interval=1):
+    def run_continuously(self, interval=1): 
         """Continuously run, while executing pending jobs at each
         elapsed time interval.
         @return cease_continuous_run: threading. Event which can
@@ -272,26 +329,18 @@ class Machine:
         continuous_thread = ScheduleThread()
         continuous_thread.start()
         return cease_continuous_run
-            
-    def TimeToWait():
-        counter = 60;
-        start = time.time()
-        
-        while True:
-            if time.time() - start > 1:
-                start = time.time()
-                counter = counter - 1
-            
-                log.debug("{} seconds remaining".format(counter))
-            
-                if counter <= 0:
-                    break
+    
+    #from scheduler documentation of parallel execution
+    # https://schedule.readthedocs.io/en/stable/parallel-execution.html
+    def run_threaded(self, job_func):
+        job_thread = threading.Thread(target=job_func)
+        job_thread.start()
 
     #Stops Timelapse
     def StopTimelapse(self):
         logging.info('Stopping timelapse')
-        self.stop_run_continuously.set() #stopping continous run thread
-        #self.timelapse_running = False
+        self.stop_run_continously.set() #stopping continous run thread
+        self.timelapse_running = False
     
     def BackLights_On(self):
         logging.debug('Turning backlights on from machine class')
@@ -330,13 +379,12 @@ class Machine:
 
     def __del__(self):
         # stopping schedule jobs
-        self.stop_run_continously_start_night.set()
-        self.stop_run_continously_end_night.set()
-        if self.stop_run_continuously is not None: #if set
-            self.stop_run_continuously.set() #stopping continous run thread
+        if self.timelapse_running is True: #if set
+            logger.debug("stopping timelapse with setting")
+            self.stop_run_continously.set() #stopping continous run thread
         
         #deleting other objects
         self.grbl_ar.__del__()
         self.lights_ar.__del__()
-        self.camera.__del__() #may not need to delete
+        #self.camera.__del__() #may not need to delete
 

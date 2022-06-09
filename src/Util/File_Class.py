@@ -47,5 +47,5 @@ class File(object):
 
     def __del__(self):
         self.file_obj.close()
-        log.debug('File Closed')
+        #log.debug('File Closed')
 

@@ -13,6 +13,7 @@ log = logging.getLogger('open_controller_log.log')
 class StatusFrame(tk.Frame):
 
     OnSaveFolderPathChange = Event_Obj()
+    OnPositionTickerChange = Event_Obj()
 
     #init
     def __init__(self, parent, Machine):
@@ -22,7 +23,7 @@ class StatusFrame(tk.Frame):
         self.machine = Machine
 
         #have to declare after tk.Frame
-        red_light = ImageTk.PhotoImage(Image.open('src/GUI/assets/red_light.png'))
+        '''red_light = ImageTk.PhotoImage(Image.open('src/GUI/assets/red_light.png'))
 
         GRBL_connection = tk.Label(self, text="GRBL Connection:").grid(row=1, column=1, pady=5, padx=5, sticky='w')
 
@@ -42,17 +43,26 @@ class StatusFrame(tk.Frame):
         self.Camera_setting_graphic.image = red_light
         self.Camera_setting_graphic.grid(row=2, column=2, padx=5, pady=5)
         #self.Camera_setting_graphic.bind('<Enter>', self.UpdateStatus('<Enter>', self.Camera_setting_graphic))
-
-        Save_Folder_Label = tk.Label(self, text='Save Folder Location:').grid(row=3, column=1, padx=5, pady=5)
+'''
+        
+        Save_Folder_Label = tk.Label(self, text='Save Folder Location:').grid(row=0, column=0, padx=5, pady=5)
         self.Save_Folder_Textbox = tk.Text(self, height=1, width=20, font=('Arial', 12))
-        self.Save_Folder_Textbox.grid(row=3, column=2, columnspan=2, pady=5, sticky='ew') #.grid returns none so must separate if editing
-        Save_Folder_Button = tk.Button(self, text='Click', command=self.browseFiles).grid(row=3,column=4, padx=5, pady=5, ipadx=5)
+        self.Save_Folder_Textbox.grid(row=0, column=1, columnspan=2, pady=5, sticky='ew') #.grid returns none so must separate if editing
+        Save_Folder_Button = tk.Button(self, text='Click', command=self.browseFiles).grid(row=0,column=3, padx=5, pady=5, ipadx=5)
+        
+        #Updown ticker for choosing num of positions
+        Pos_UpDown_Label = tk.Label(self, text='Number of Positions:').grid(row=1, column=0, padx=5, pady=5)
+        my_var = StringVar() #to set default value of ticker as highest position 7
+        my_var.set('7')
+        self.Pos_UpDown_Spin = tk.Spinbox(self, from_=1, to=7, textvariable=my_var, command=self.PosUpDownChanged)
+        self.Pos_UpDown_Spin.grid(row=1, column=1, padx=5, pady=5)
+        
 
-    # Function for opening the
+# Function for opening the
     # file explorer window
     def browseFiles(self, event=None):
         # creating path to save folder
-        filename = filedialog.askdirectory(initialdir="/home/", title="Select a File")
+        filename = filedialog.askdirectory(initialdir="/home/", title="Select A Folder Location")
         if filename:
             filepath: str = os.path.abspath(filename)
             log.debug('Save Folder path is {}'.format(filepath))
@@ -63,9 +73,14 @@ class StatusFrame(tk.Frame):
         self.Save_Folder_Textbox.insert('1.0', str(filepath)) #refill textbox
 
         self.OnSaveFolderPathChange(filepath)
+        
+    def PosUpDownChanged(self):
+        log.debug('Pos Up Down ticker is {}'.format(self.Pos_UpDown_Spin.get()))
+        self.OnPositionTickerChange(self.Pos_UpDown_Spin.get())
+        log.debug('Pos Up Down ticker is {}'.format(self.Pos_UpDown_Spin.get()))
 
     #Check status of GRBL Connection on event of GRBL connected in machine
-    def ChangeGRBLStatusOn(self):
+    '''def ChangeGRBLStatusOn(self):
         green_light = ImageTk.PhotoImage(Image.open('GUI/assets/green_light.png'))
         self.GRBL_status_graphic.configure(image=green_light)
         self.GRBL_status_graphic.image = green_light
@@ -104,7 +119,10 @@ class StatusFrame(tk.Frame):
         #red_light = ImageTk.PhotoImage(Image.open('src/GUI/assets/red_light.png'))
         #self.Camera_setting_graphic.configure(image=red_light)
         #self.Camera_setting_graphic.image=red_light
-        log.debug('Camera Settings graphic changed to red light')
+        log.debug('Camera Settings graphic changed to red light')'''
 
     def AddSubscriberSaveFolderPathChanged(self, objMethod):
         self.OnSaveFolderPathChange += objMethod
+        
+    def AddSubscriberPositionTickerChanged(self, objMethod):
+        self.OnPositionTickerChange += objMethod

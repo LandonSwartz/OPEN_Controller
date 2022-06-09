@@ -1,9 +1,4 @@
 # GRBL Subclass of Arduino class
-
-#from src.Util.Arduino_Class import Arduino
-#from src.Util.File_Class import File
-
-#from Util.Arduino_Class import Arduino
 import logging
 
 from Util.Arduino_Class import Arduino
@@ -27,12 +22,12 @@ class GRBL_Arduino(Arduino):
     def SendCommand(self, command):
         try:
             self.Send_Serial(command + '\n')
-            sleep(0.3)
+            sleep(1)
             is_ok = self.ser_port.Read_Data()
             while is_ok != 'ok':
                 is_ok = self.ser_port.Read_Data()
                 #logging.debug('is_ ok is {}'.format(is_ok))
-            sleep(0.1)
+            sleep(0.5)
             self.ser_port.ser.flushInput()
         except:
             return False
@@ -43,5 +38,11 @@ class GRBL_Arduino(Arduino):
         for line in self.GRBL_Settings.ReturnFileAsList():
             self.Send_Serial(line)
 
-    def HomeCommand(self):
+    def HomeCommand(self): 
         self.SendCommand('$H\n')
+        
+    def SleepCommand(self):
+        self.Send_Serial('$SLP\n')
+        
+    def GRBLSoftReset(self):      
+        self.Send_Serial(chr(0x18)) # ctrl-x in ascii
