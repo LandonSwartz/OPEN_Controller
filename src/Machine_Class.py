@@ -50,7 +50,7 @@ class Machine:
         self.timelapse_end_of_night = datetime.strptime("7", "%H")
         self.stop_run_continuously = None
         self.timelapse_running = False
-        int : self.num_of_pos = 7 #default number of positions
+        self.num_of_pos = 7 #default number of positions
         
         #setting night schedules
         self.SetTimelapseStartOfNight(self.timelapse_start_of_night.strftime('%H'))
