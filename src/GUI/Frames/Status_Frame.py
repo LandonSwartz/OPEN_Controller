@@ -62,17 +62,20 @@ class StatusFrame(tk.Frame):
     # file explorer window
     def browseFiles(self, event=None):
         # creating path to save folder
-        filename = filedialog.askdirectory(initialdir="/home/", title="Select A Folder Location")
-        if filename:
-            filepath: str = os.path.abspath(filename)
-            log.debug('Save Folder path is {}'.format(filepath))
-        # setting to class' save location settings
+        try:
+            filename = filedialog.askdirectory(initialdir="/home/", title="Select A Folder Location")
+            if filename:
+                filepath: str = os.path.abspath(filename)
+                log.debug('Save Folder path is {}'.format(filepath))
+            # setting to class' save location settings
 
-        # Change textbox contents
-        self.Save_Folder_Textbox.delete('1.0', END) #to clear textbox, needs 1.0 for line 1 and char 0
-        self.Save_Folder_Textbox.insert('1.0', str(filepath)) #refill textbox
+            # Change textbox contents
+            self.Save_Folder_Textbox.delete('1.0', END) #to clear textbox, needs 1.0 for line 1 and char 0
+            self.Save_Folder_Textbox.insert('1.0', str(filepath)) #refill textbox
 
-        self.OnSaveFolderPathChange(filepath)
+            self.OnSaveFolderPathChange(filepath)
+        except:
+            log.debug("No Save Folder set")
         
     def PosUpDownChanged(self):
         log.debug('Pos Up Down ticker is {}'.format(self.Pos_UpDown_Spin.get()))
