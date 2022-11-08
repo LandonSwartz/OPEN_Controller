@@ -44,7 +44,7 @@ class UART_Serial:
             data_encode = self.ConvertToBytes(data)
             #log.debug('Wrote {} to serial port {}'.format(data_encode, self.port))
             self.ser.write(data_encode)
-        except SerialTimeException as e:
+        except serial.SerialTimeException as e:
             log.error("write timeout error in uart_serial")
         except:
             log.error("General error in Write_Data of UART_Serial_Class")

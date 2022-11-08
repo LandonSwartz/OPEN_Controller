@@ -31,23 +31,36 @@ class Lights_Arduino(Arduino):
 
     # turning on Backlights when called with command
     def BackLightsOn(self):
+        #try: 
         self.ser_port.Write_Data('S2V1\n') #or whatever command is
         self.backlight_state = True
+        #except serial.SerialTimeException as e:
+        #    log.error("Serial Time Exception for BacklightsOn()")
 
     # Turns off Backlights when called
     def BackLightsOff(self):
+        #try: 
         self.ser_port.Write_Data('S2V0\n')
         self.backlight_state = False
+        #except serial.SerialTimeException as e:
+            #log.error("Serial Time Exception for BacklightsOff()")
+        
 
     # Turns on Growlight Relay signal on arduino
     def GrowlightsOn(self):
+        #try: 
         self.ser_port.Write_Data('S1V1\n')
         self.growlight_state = True
+        #except serial.SerialTimeException as e:
+        #    log.error("Serial Time Exception for GrowlightsOn()")
 
     #Turns off Growlight Relay Signal on arduino
     def GrowlightsOff(self):
+        #try:
         self.ser_port.Write_Data('S1V0\n')
         self.growlight_state = False
+        #except serial.SerialTimeException as e:
+            #log.error("Serial Time Exception for GrowlightsOff()")
         
         
     ### Getter and Setter Functions ###
