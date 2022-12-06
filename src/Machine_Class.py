@@ -32,13 +32,44 @@ class Machine:
     OnCameraSettingsLoaded = Event_Obj()
     OffCameraSettingsLoaded = Event_Obj()
 
-    def __init__(self):
+    '''def __init__(self):
         self.stop_event = None
         log.info('Machine class is initiated')
 
         #initating arduinos and camera
         self.grbl_ar = GRBL_Arduino('/dev/ttyACM0') #GRBL arduino, plugged in first
         self.lights_ar = Lights_Arduino('/dev/ttyACM1') #plugged in second
+        self.camera = Vimba_Camera()
+
+        self.saveFolderPath = os.getcwd() # just to have something set on the program just in case
+        self.cameraSettingsPath = None
+        self.timelapse_interval = 2
+        self.timelapse_end_date = datetime.combine(datetime.now(), datetime.max.time())
+        self.current_Position = None
+        self.timelapse_start_of_night = datetime.strptime("21", "%H")
+        self.timelapse_end_of_night = datetime.strptime("7", "%H")
+        self.stop_run_continuously = None
+        self.timelapse_running = False
+        self.num_of_pos = 7 #default number of positions
+        
+        #setting night schedules
+        self.SetTimelapseStartOfNight(self.timelapse_start_of_night.strftime('%H'))
+        self.SetTimelapseEndOfNight(self.timelapse_end_of_night.strftime('%H'))'''
+    
+    #init with declared serial ports
+    def __init__(self, grbl_port, lights_port):
+        self.stop_event = None
+        log.info('Machine class is initiated')
+
+        #initating arduinos and camera
+        if grbl_port is None:
+            self.grbl_ar = GRBL_Arduino('/dev/ttyACM0') #GRBL arduino, plugged in first
+        else:
+            self.grbl_ar = GRBL_Arduino(grbl_port) #GRBL arduino, plugged in first
+        if lights_port is None:
+            self.lights_ar = Lights_Arduino('/dev/ttyACM1') #plugged in second
+        else:
+            self.lights_ar = Lights_Arduino(lights_port) #plugged in second
         self.camera = Vimba_Camera()
 
         self.saveFolderPath = os.getcwd() # just to have something set on the program just in case

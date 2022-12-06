@@ -12,6 +12,10 @@ from time import sleep
 #from Util.logger_setup import logger
 import logging
 
+#for getting serial ports
+import argparse
+
+
 
 def main():
     #maindow set up
@@ -19,8 +23,22 @@ def main():
     root.title("OPEN Controller")
     #root.geometry('400x600') #set window size
     #root.resizable(False, False) #turning off resizing
-
-    machine = Machine()
+    
+    #getting serial ports
+    parser = argparse.ArgumentParser(prog='OPEN Controller',
+                                    description='Controlling software for open series robotics from DMC Labs')
+    parser.add_argument('-g', '--grbl', help='serial port of arduino (/dev/ttyACM* format), default is /dev/ttyACM0')
+    parser.add_argument('-l', '--lights', help='serial port of arduino (/dev/ttyACM* format), default is /dev/ttyACM1')
+    
+    args=parser.parse_args()
+    print(args)
+    
+    if len(sys.argv) == 1: #no args passed
+        #autoconnecting arduinos to defaults
+        machine = Machine(None, None)
+    else:
+        print('args not empty')
+        machine = Machine(args.grbl, args.lights)
 
     app = MainApplication(root, machine)
     sleep(2)
