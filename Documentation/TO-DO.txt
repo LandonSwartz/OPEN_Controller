@@ -11,6 +11,5 @@ Verison Goals:
 	- enable/disable stepper motor
 	
 Other things to consider:
-	- docker for deployment
 	- make clikcing file execute it in python
 	- virtual environment for project

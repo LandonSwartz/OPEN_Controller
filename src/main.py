@@ -31,7 +31,6 @@ def main():
     parser.add_argument('-l', '--lights', help='serial port of arduino (/dev/ttyACM* format), default is /dev/ttyACM1')
     
     args=parser.parse_args()
-    print(args)
     
     if len(sys.argv) == 1: #no args passed
         #autoconnecting arduinos to defaults
