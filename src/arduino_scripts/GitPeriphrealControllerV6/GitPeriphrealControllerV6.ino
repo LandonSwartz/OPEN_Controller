@@ -9,6 +9,14 @@
     - Removed read success serial comment from loop() then added delay(10) to ease up serial communication timing
     - Fixed spelling error of recieved in loop()
 */
+
+/* Commands to use:
+ *  - format is S*V*
+ *  - Using S1 or S0 determines what kind of command, 0 for growlights, 1 for neopixel
+ *  - V0 or V1 is off or on, respectively
+ *  - ex: S1V1 turns on the neopixel strip
+ *  - ex: S0V0 turns off the growlights
+ */
 #include <Adafruit_NeoPixel.h>
 
 #ifdef __AVR__
