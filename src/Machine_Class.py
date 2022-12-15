@@ -12,6 +12,9 @@ import schedule
 from datetime import datetime, date
 import threading #for threading things
 
+#for gocmd
+from Util.gocommand import gocommand_helper
+
 log = logging.getLogger('open_controller_log.log')
 
 
@@ -86,6 +89,11 @@ class Machine:
         #setting night schedules
         self.SetTimelapseStartOfNight(self.timelapse_start_of_night.strftime('%H'))
         self.SetTimelapseEndOfNight(self.timelapse_end_of_night.strftime('%H'))
+        
+        #setting up gocommands
+        self.gocmd_helper = gocommand_helper('lgaswartz')
+        #self.gocmd_helper.cyverse_ls_dir()
+
 
     def SetSaveFolderPath(self, path):
         # setting path
@@ -107,7 +115,7 @@ class Machine:
                 except OSError:
                     logger.error('Fialure to make folder {}'.format(folder_path))
                     pass # pass if already exist'''
-                
+                                    
         return
     
     # makes number of position folders as needed
@@ -385,6 +393,16 @@ class Machine:
     def GrowLights_Off(self):
         logging.debug('Turning growlights off from machine class')
         self.lights_ar.GrowlightsOff()
+        
+    # Go Commands
+    # usage with threads:         self.run_threaded(self.Sync_Folders_Thread)
+    def Sync_Folders(self):
+        logging.debug('Syncing with gocommands from machine class')
+        self.gocmd_helper.sync_cyverse_dir(self.saveFolderPath, self.saveFolderPath)
+        
+    def Sync_Folders_Thread(self):
+        job_thread = threading.Thread(target=self.Sync_Folders())
+        job_thread.start()
 
     #event handling
     def AddSubscribersForOnConnectedGRBLEvent(self, objMethod):
