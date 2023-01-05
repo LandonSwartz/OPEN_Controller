@@ -206,6 +206,16 @@ class Machine:
             self.grbl_ar.HomeCommand()
         else: # regular position
             self.grbl_ar.Send_Serial(commands[int(posNum)])
+        
+    # Putting GRBL to sleep mode if not needed
+    def GRBLSleepMode(self):
+        log.info('Setting GRBL to sleep mode')
+        self.grbl_ar.SleepCommand()
+        
+    def GRBLSoftReset(self):
+        log.info('Soft reset on GRBL to wake up')
+        self.grbl_ar.GRBLSoftReset()
+        
 
     def CaptureImage(self, filepath):
         log.info('Capturing image on vimba camera')
@@ -265,10 +275,13 @@ class Machine:
             except:
                 logger.debug("Single cycle thread failed")
                 cycle_thread = None'''
-            
+                
+        
+    
     # Thread for single cycle
     def SingleCycleThread(self):
-        log.debug('single cycle thread is running')
+        log.debug('single cycle thread is running') 
+        
         commands = self.grbl_commands.ReturnFileAsList()
         self.lights_ar.GrowlightsOff()
         self.lights_ar.BackLightsOn()
@@ -328,14 +341,16 @@ class Machine:
         self.PositionFolders()
 
         if self.timelapse_running is True:
-                    #starting cycle
+            #starting cycle
             self.SingleCycle()
         
             current_date = datetime.now()
 
             schedule.every(self.timelapse_interval).hours.until(self.timelapse_end_date).do(self.run_threaded, self.SingleCycle) #can change and set schedule with this using GUI!
             schedule.every().day.at(self.timelapse_start_of_night.strftime('%H:%M')).do(self.run_threaded, self.GrowLights_Off)
+            schedule.every().day.at(self.timelapse_start_of_night.strftime('%H:%M')).do(self.run_threaded, self.GRBLSleepMode)
             schedule.every().day.at(self.timelapse_end_of_night.strftime('%H:%M')).do(self.run_threaded, self.GrowLights_On)
+            schedule.every().day.at(self.timelapse_start_of_night.strftime('%H:%M')).do(self.run_threaded, self.GRBLSoftReset)
             
             self.stop_run_continously = self.run_continuously()
             log.info("All jobs on schedule is {}".format(schedule.get_jobs()))
@@ -404,7 +419,7 @@ class Machine:
         job_thread = threading.Thread(target=self.Sync_Folders())
         job_thread.start()
 
-    #event handling
+    # event handling
     def AddSubscribersForOnConnectedGRBLEvent(self, objMethod):
         self.OnGRBLConnected += objMethod
 

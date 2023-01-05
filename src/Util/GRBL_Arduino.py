@@ -46,3 +46,7 @@ class GRBL_Arduino(Arduino):
         
     def GRBLSoftReset(self):      
         self.Send_Serial(chr(0x18)) # ctrl-x in ascii
+        
+    '''def GRBLSleep(self):
+        self.Send_Serial('$SLP\n')
+        logging.debug('Sent sleep command')'''
