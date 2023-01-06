@@ -350,7 +350,7 @@ class Machine:
             schedule.every().day.at(self.timelapse_start_of_night.strftime('%H:%M')).do(self.run_threaded, self.GrowLights_Off)
             schedule.every().day.at(self.timelapse_start_of_night.strftime('%H:%M')).do(self.run_threaded, self.GRBLSleepMode)
             schedule.every().day.at(self.timelapse_end_of_night.strftime('%H:%M')).do(self.run_threaded, self.GrowLights_On)
-            schedule.every().day.at(self.timelapse_start_of_night.strftime('%H:%M')).do(self.run_threaded, self.GRBLSoftReset)
+            schedule.every().day.at(self.timelapse_end_of_night.strftime('%H:%M')).do(self.run_threaded, self.GRBLSoftReset)
             
             self.stop_run_continously = self.run_continuously()
             log.info("All jobs on schedule is {}".format(schedule.get_jobs()))
