@@ -29,7 +29,7 @@
 #define NEOPIN_3 5
 #define NEOPIN_4 6
 
-#define GROWLIGHT 9
+#define GROWLIGHT 10
 #define INPUT_SIZE 30
 #define BRIGHTNESS 180
 
