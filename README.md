@@ -26,6 +26,8 @@ This project is licensed under the GNU General Public License. More infomation c
 ## Authors
 Principal Contributor: Landon Swartz
 
+Contact at lgsm2n@umsystem for any questions.
+
 ## Proposed Improvements
 There are a few improvements that I was never able to implement that I think would be very useful for future projects. Some tasks are simple and others complex, I will denote my intended difficulty with the task.
 - Enable and disable the stepper motor through the enable/disable pin on the stepper driver to reduce stress on motors (EASY)
